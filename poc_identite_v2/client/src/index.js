@@ -1,0 +1,29 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import Home from './components/Home';
+import MyIdentity from './components/MyIdentity';
+import BirthDetails from './components/BirthDetails';
+import AddBirth from './components/AddBirth';
+import VerifyIdentity from './components/VerifyIdentity';
+import IdentityDetails from './components/IdentityDetails';
+import AddMarriage from './components/AddMarriage';
+
+
+import {Router, Switch, Route } from 'react-router-dom';
+import history from './history';
+
+ReactDOM.render(
+    <Router history={history}>
+        <Switch>
+           <Route exact path='/' component={Home} />
+           <Route path='/MyIdentity' component={MyIdentity} />
+           <Route path='/BirthDetails' component={BirthDetails} />
+           <Route path='/AddBirth' component={AddBirth} />
+           <Route path='/VerifyIdentity' component={VerifyIdentity} />
+           <Route path='/IdentityDetails' component={IdentityDetails} />
+           <Route path='/AddMarriage' component={AddMarriage} />           
+        </Switch>
+    </Router>,    
+    document.getElementById('root')
+);
