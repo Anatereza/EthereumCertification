@@ -4,16 +4,12 @@ pragma solidity >=0.4.21 <0.8.0;
     /*
         The CivilState contract keeps track of the citizen information, starting from their birth and being maintained throughout their life
      */
-contract CivilState {
+contract CivilStateV2 {
 
     /*
-        Define an public owner variable. Set it to the creator of the contract when it is initialized.
-        Define a variable for each possible modifier
+        Public owner variable => the creator of the contract when it is initialized.
     */
     address payable public owner;
-    address public hospital;
-    address public prefecture;
-    address public cityHall;
 
     /*
         Birth struct : add birth information
@@ -51,6 +47,26 @@ contract CivilState {
         string userPassword;
     }
 
+    struct Authentification {
+        string login;
+        string password;
+        string name;
+    }
+    
+    /*
+        Mapping to keep track of the hospital members
+    */
+    mapping (address => Authentification) hospitalMembers;
+
+    /*
+        Mapping to keep track of the prefecture members
+    */
+    mapping (address => Authentification) prefectureMembers;
+
+    /*
+        Mapping to keep track of the city hall members
+    */
+    mapping (address => Authentification) cityHallMembers;
 
     /*
        Mapping to keep track of the births (civil status).
@@ -63,51 +79,60 @@ contract CivilState {
     uint identitiesCount = 0;
 
     /*
-        Mapping to keep track of users identifiers
+        Mapping to keep track of citizen's identifiers
     */
-    mapping(string => Identifier) identifiers;
+    mapping(string => Identifier) citizenIdentifiers;
 
     /*
         Mapping to keep track of identity certifications
     */
-    mapping(bytes32 => Identifier) certifications;
+    mapping(bytes32 => Identifier) idCertifications;
 
     // Events
+
+    // Event signaling that new hospital member was added
+    event LogEventAddHospitalMember(string memberName);
+    // Event signaling that new prefecture member was added
+    event LogEventAddPrefectureMember(string memberName);
+    // Event signaling that new cityHall member was added
+    event LogEventAddCityHallMember(string memberName);
+    // Event signaling that new birth member was declared
     event LogEventBirthAdded (string name, string lastName, uint birthId);
+    // Event signaling that a new identity was verified
     event LogEventVerifyIdentity(uint birthId, uint identityId);
+    // Event signaling that new marriage member was declared
     event LogEventDeclareMarriage(string marriageDate, uint identityId);
 
 
     /*
        Modifier that throws an error if the msg.sender is not the owner.
     */
-    modifier isOwner () {
+    modifier isAdmin () {
         require(owner == msg.sender);
         _;
     }
 
-    modifier isHospital () {
-        require (hospital == msg.sender);
+    modifier isHospital (address _hospitalMember) {
+        require (bytes(hospitalMembers[_hospitalMember].name).length > 0);
         _;
     }
 
-    modifier isPrefecture () {
-        require (prefecture == msg.sender);
+    modifier isPrefecture (address _prefectureMember) {
+        require (bytes(prefectureMembers[_prefectureMember].name).length > 0);
         _;
     }
 
-    modifier isCityHall () {
-        require (cityHall == msg.sender);
+    modifier isCityHall (address _cityHallMember) {
+        require (bytes(cityHallMembers[_cityHallMember].name).length > 0);
         _;
-    }        
+    }
 
-    constructor (address _hospital, address _prefecture, address _cityHall) public {
+    constructor () public {
         owner = msg.sender;
-        hospital = _hospital;
-        prefecture = _prefecture;
-        cityHall = _cityHall;
     }
     
+    // Help functions 
+
     // Concatenate strings
     function concatenate(string memory a, string  memory b) public pure returns(string memory) {
             return string(abi.encodePacked(a, b));
@@ -130,11 +155,52 @@ contract CivilState {
         str = string(s);
     }
     
+    // Admin functions
+
+    // Add a new hospital member to the "hospitalMembers" mapping
+    function addHospitalMember (address _newMember, string memory _memberName) public isAdmin {
+        // Initialization of login and password
+        string memory _login = concatenate("login_", _memberName);
+        string memory _password = concatenate("pwd_", _memberName);
+        hospitalMembers[_newMember] = Authentification({
+            login : _login,
+            password : _password,
+            name : _memberName
+        });
+        emit LogEventAddHospitalMember(_memberName);
+    }
+
+    // Add a new prefecture member to the "prefectureMembers" mapping
+    function addPrefectureMember (address _newMember, string memory _memberName) public isAdmin {
+        // Initialization of login and password
+        string memory _login = concatenate("login_", _memberName);
+        string memory _password = concatenate("pwd_", _memberName);
+        prefectureMembers[_newMember] = Authentification({
+            login : _login,
+            password : _password,
+            name : _memberName
+        });
+        emit LogEventAddPrefectureMember(_memberName);
+    }
+
+    // Add a new city hall member to the "cityHallMembers" mapping
+    function addCityHallMember (address _newMember, string memory _memberName) public isAdmin {
+        // Initialization of login and password
+        string memory _login = concatenate("login_", _memberName);
+        string memory _password = concatenate("pwd_", _memberName);
+        cityHallMembers[_newMember] = Authentification({
+            login : _login,
+            password : _password,
+            name : _memberName
+        });
+        emit LogEventAddCityHallMember(_memberName);
+    }
+
     /*
-        When there is a birth, the hospital must declare the birth : this function creates a new birth
-        Only the hospital can create a new birth
+        When there is a birth, a member of the hospital must declare the birth : this function creates a new birth
+        Only a hospital member can create a new birth
     */      
-    function addBirth (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity) public isHospital returns(uint) {
+    function addBirth (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity) public isHospital(msg.sender) returns(uint) {
         uint birthId = birthsCount++;
         births[birthId] = Birth({
             name : _name,
@@ -147,19 +213,21 @@ contract CivilState {
         return birthId;
     }
 
-    // ger the birthId after a birth add
-    function getBirthId () public view returns (uint){
-        uint birth_id;
+    // get the birthId after a birth add
+    function getBirthId () public view returns (uint _birthId, string memory _name, string memory _lastName){
+        _name = "undefined";
+        _lastName = "undefined";
         if (birthsCount >= 0) {
-            birth_id = birthsCount - 1;
+            _birthId = birthsCount - 1;
+            _name = births[_birthId].name;
+            _lastName = births[_birthId].lastName;
         }    
-        return birth_id;
     }
     
     /*
-        After a birth declaration, the prefecture must verifiy the citizen's identity
+        After a birth declaration, the a member of the prefecture must verifiy the citizen's identity
     */
-    function createIdentity (uint birthId) public isPrefecture returns (uint identityId) {
+    function createIdentity (uint birthId) public isPrefecture(msg.sender) returns (uint identityId) {
         require(births[birthId].isVerified == false);
         births[birthId].isVerified = true;
         
@@ -178,7 +246,7 @@ contract CivilState {
             userPassword: password
         });
 
-        identifiers[login] = Identifier({
+        citizenIdentifiers[login] = Identifier({
             userIdentityCount : identityId,
             userPassword : password
         });
@@ -186,19 +254,21 @@ contract CivilState {
         emit LogEventVerifyIdentity(birthId, identityId);
     }
 
-    function getIdentityId() public view returns (uint _identity, string memory _test){
-        uint identity_id;
+    function getIdentityId() public view returns (uint _identity, string memory _name, string memory _lastName){
+        _name = "undefined";
+        _lastName = "undefined";
         if (identitiesCount >= 0) {
-            identity_id = identitiesCount - 1;
-        }    
-        return (identity_id, "test");
+            _identity = identitiesCount - 1;
+            _name = identities[_identity].birthinfo.name;
+            _lastName = identities[_identity].birthinfo.lastName;            
+        } 
     }
 
     /*
         Declare a marriage
-        Only City Hall can declare a message
+        Only a city Hall member can declare a message
     */
-    function declareMarriage (uint identityId, string memory _marriageDate) public isCityHall {
+    function declareMarriage (uint identityId, string memory _marriageDate) public isCityHall(msg.sender) {
         require(identities[identityId].birthinfo.isVerified == true);
         
         //Change marital status
@@ -206,7 +276,6 @@ contract CivilState {
         identities[identityId].marriageDate = _marriageDate;
 
         emit LogEventDeclareMarriage(_marriageDate, identityId);
-    
     }
 
     /*
@@ -214,14 +283,14 @@ contract CivilState {
     */
     function generateIdCertification (string memory login, string memory pwd) public returns (bytes32){
         //Verify that the user used the good password
-        require (keccak256(bytes(identifiers[login].userPassword)) == keccak256(bytes(pwd)));
+        require (keccak256(bytes(citizenIdentifiers[login].userPassword)) == keccak256(bytes(pwd)));
         // Get the user identity count
-        uint userIdCount = identifiers[login].userIdentityCount;
+        uint userIdCount = citizenIdentifiers[login].userIdentityCount;
         string memory userIdCountString = uintToString(userIdCount);
         string memory contIdentifiers = concatenate(userIdCountString, pwd);
         bytes32 identity_hash = keccak256(bytes(contIdentifiers));
         // add certification to mapping
-        certifications[identity_hash] = identifiers[login];
+        idCertifications[identity_hash] = citizenIdentifiers[login];
         return identity_hash;
     }
     
@@ -236,7 +305,7 @@ contract CivilState {
 
     function verifyCertification (bytes32 id_hash) public view returns (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus) {
         // get userIdCount
-        uint userIdCount = certifications[id_hash].userIdentityCount;
+        uint userIdCount = idCertifications[id_hash].userIdentityCount;
         return(identities[userIdCount].birthinfo.name, identities[userIdCount].birthinfo.lastName, identities[userIdCount].birthinfo.birthDate, identities[userIdCount].birthinfo.birthCity, identities[userIdCount].maritalStatus);
 
     }
@@ -263,16 +332,28 @@ contract CivilState {
         return owner;
     }
 
-    function getHospital() public view returns(address _hospital){
-        return hospital;
+    function isHospitalMember() public view returns(bool isMember){
+        if (bytes(hospitalMembers[msg.sender].name).length > 0) {
+            isMember = true;
+        } else {
+            isMember = false;
+        }
     }
 
-    function getPrefecture() public view returns(address _prefecture){
-        return prefecture;
+    function isPrefectureMember() public view returns(bool isMember){
+        if (bytes(prefectureMembers[msg.sender].name).length > 0) {
+            isMember = true;
+        } else {
+            isMember = false;
+        }
     }
 
-    function getCityHall() public view returns(address _cityHall) {
-        return cityHall;
+    function isCityHallisPrefectureMember() public view returns(bool isMember){
+        if (bytes(cityHallMembers[msg.sender].name).length > 0) {
+            isMember = true;
+        } else {
+            isMember = false;
+        }
     }
 
 }

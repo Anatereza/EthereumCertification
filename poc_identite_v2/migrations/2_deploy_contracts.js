@@ -1,10 +1,6 @@
-var CivilState = artifacts.require("./CivilState.sol")
+var CivilStateV2 = artifacts.require("./CivilStateV2.sol")
 
-module.exports = function(deployer, network, accounts) {
+module.exports = function(deployer) {
 
-  const hospital = accounts[1]
-  const prefecture = accounts[2]
-  const cityHall = accounts[3]
-
-  deployer.deploy(CivilState, hospital, prefecture, cityHall)
+  deployer.deploy(CivilStateV2)
 };
