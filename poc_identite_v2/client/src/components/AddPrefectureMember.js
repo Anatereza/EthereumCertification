@@ -12,7 +12,7 @@ import NavigationCityHall from './NavigationCityHall';
 import Navigation from './Navigation';
 
 
-class VerifyIdentity extends Component {
+class AddPrefectureMember extends Component {
     constructor(props) {
         super(props)
     
@@ -20,41 +20,36 @@ class VerifyIdentity extends Component {
           CivilStateInstance: undefined,
           account: null,
           web3: null,
-          name :'',
-          lastName : '',
+          newMember : null,
+          memberName : '',
           isAdmin: false,
           isHospital: false,
           isPrefecture: false,
-          isCityHall: false,
-          birthId: null,
-          identityId: null
+          isCityHall: false
         }
     
     }
 
     
-    updateIdentity = event => {
-        this.setState({ birthId : event.target.value});
+    updateMember = event => {
+        this.setState({ newMember : event.target.value});
     }
 
-    getIdentityId =  async() =>  {
-      const response = await  this.state.CivilStateInstance.methods.getIdentityId().call();
-      // uint _identity, string memory _name, string memory _lastName
-      const _idIdentity = response[0];
-      const _name = response[1];
-      const _lastName = response[2];
-      this.setState({birthId : _idIdentity, name : _name, lastName : _lastName});
-    }
+    updateMemberName = event => {
+        this.setState({ memberName : event.target.value});
+    }    
 
-    addIdentityToBlockchain = async() =>  {
+    AddPrefectureMemberToBlockchain = async() =>  {
       try {  
-        await this.state.CivilStateInstance.methods.createIdentity(this.state.birthId).send({
+        // AddPrefectureMember (address _newMember, string memory _memberName)
+        await this.state.CivilStateInstance.methods.addPrefectureMember(
+              this.state.newMember,
+              this.state.memberName)
+              .send({
                   from : this.state.account,
                   gas: 1000000
-              })      
-           
-        alert('An identity verification was submitted');
-
+              })
+        alert('A prefecture member was added');
       } catch (error) {
           // Catch any errors for any of the above operations.
           alert(
@@ -86,6 +81,7 @@ class VerifyIdentity extends Component {
               deployedNetwork && deployedNetwork.address,
           );
 
+          // Set web3, accounts, and contract to the state
           // account[0] = default account used by metamask
           this.setState({ CivilStateInstance: instance, web3: web3, account: accounts[0] });
 
@@ -108,8 +104,7 @@ class VerifyIdentity extends Component {
           const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
           if (cityHallMember) {
             this.setState({isCityHall : true});
-          }
-        
+          }       
     
         } catch (error) {
           // Catch any errors for any of the above operations.
@@ -132,7 +127,7 @@ class VerifyIdentity extends Component {
           menu = <NavigationCityHall />
         } else {
           menu = <Navigation />
-        }        
+        }       
         
         if (!this.state.web3) {      
           return (
@@ -152,7 +147,7 @@ class VerifyIdentity extends Component {
               <div className="IdentityDetails">
                   <div className="IdentityDetails-title">
                     <h1>
-                      ONLY PREFECTURE CAN ACCESS
+                      ONLY ADMIN CAN ACCESS
                     </h1>
                   </div>
                   {menu}
@@ -167,7 +162,7 @@ class VerifyIdentity extends Component {
             <div className="IdentityDetails">
               <div className="IdentityDetails-title">
                 <h1>
-                  Verify identity
+                  Add prefecture member
                 </h1>
               </div>
             </div>
@@ -175,34 +170,33 @@ class VerifyIdentity extends Component {
            
             <div className="form">
               <FormGroup>
-                  <div className="form-label">Enter birth id to verify - </div>
+                  <div className="form-label">Enter prefecture member name - </div>
                   <div className="form-input">
                       <FormControl
                         input = 'text'
-                        value = {this.state.identityId}
-                        onChange = {this.updateIdentity}
+                        value = {this.state.memberName}
+                        onChange = {this.updateMemberName}
                       />
                   </div>
               </FormGroup>
-    
 
-              <Button onClick={this.addIdentityToBlockchain} className="button-addidentity">
-                  Verify identity
+              <FormGroup>
+                  <div className="form-label">Enter member Ethereum address - </div>
+                  <div className="form-input">
+                      <FormControl
+                        input = 'text'
+                        value = {this.state.newMember}
+                        onChange = {this.updateMember}
+                      />
+                  </div>
+              </FormGroup>
+
+
+
+              <Button onClick={this.AddPrefectureMemberToBlockchain} className="button-addbirth">
+                  Add prefecture member
               </Button>
 
-
-            </div>
-            
-            <div className="result">
-              <Button onClick={this.getIdentityId} className="button-birthId">
-                  Show identity id
-              </Button>
-
-              <div>
-                The last birth id added is {this.state.identityId}
-                    Name : {this.state.name}
-                    Last name : {this.state.lastName}
-              </div>
 
             </div>
           </div>
@@ -210,4 +204,4 @@ class VerifyIdentity extends Component {
     }      
 
 }
-export default VerifyIdentity;
+export default AddPrefectureMember;

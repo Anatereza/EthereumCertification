@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import CivilStateContract from "../contracts/CivilState.json";
+import CivilStateContractV2 from "../contracts/CivilStateV2.json";
 import getWeb3 from "../getWeb3";
 
 // FormGroup to take input from user
 import { FormGroup, FormControl, Button } from 'react-bootstrap';
 
+import NavigationAdmin from './NavigationAdmin';
 import NavigationHospital from './NavigationHospital';
 import NavigationPrefecture from './NavigationPrefecture';
 import NavigationCityHall from './NavigationCityHall';
@@ -23,7 +24,7 @@ class AddBirth extends Component {
           lastName : '',
           birthDate : '',
           birthCity : '',
-          isOwner: false,
+          isAdmin: false,
           isHospital: false,
           isPrefecture: false,
           isCityHall: false,
@@ -50,15 +51,16 @@ class AddBirth extends Component {
     }
 
     getBirthId =  async() =>  {
-      const id_birth = await  this.state.CivilStateInstance.methods.getBirthId().call();
-      this.setState({birthId : id_birth});
-      //window.location.reload(false);
+      const response = await  this.state.CivilStateInstance.methods.getBirthId().call();
+      // response :  uint _birthId, string memory _name, string memory _lastName
+      const _birthId = response[0];
+      const _name = response[1];
+      const _lastName = response[2];
+      this.setState({birthId : _birthId, name : _name, lastName : _lastName});
     }
 
     addBirthToBlockchain = async() =>  {
       try {  
-        //const id_birth = await this.state.CivilStateInstance.methods.addBirth(this.state.name, this.state.lastName,this.state.birthDate, this.state.birthCity).call({
-          //from : this.state.account});  
         await this.state.CivilStateInstance.methods.addBirth(
               this.state.name,
               this.state.lastName,
@@ -68,11 +70,7 @@ class AddBirth extends Component {
                   from : this.state.account,
                   gas: 1000000
               })
-        
-           
         alert('A birth declaration was submitted');
-        // Reload
-        // window.location.reload(false);
       } catch (error) {
           // Catch any errors for any of the above operations.
           alert(
@@ -98,46 +96,36 @@ class AddBirth extends Component {
     
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
-          const deployedNetwork = CivilStateContract.networks[networkId];
+          const deployedNetwork = CivilStateContractV2.networks[networkId];
           const instance = new web3.eth.Contract(
-              CivilStateContract.abi, 
+              CivilStateContractV2.abi, 
               deployedNetwork && deployedNetwork.address,
           );
 
-
-
-          // Set web3, accounts, and contract to the state, and then proceed with an
-          // example of interacting with the contract's methods.
+          // Set web3, accounts, and contract to the state
           // account[0] = default account used by metamask
           this.setState({ CivilStateInstance: instance, web3: web3, account: accounts[0] });
 
           //Verify if hospital, prefecture, city hall or citizen
           const owner = await this.state.CivilStateInstance.methods.getOwner().call();
           if (this.state.account === owner) {
-              this.setState({isOwner : true});
+              this.setState({isAdmin : true});
           }
 
-          const hospital = await this.state.CivilStateInstance.methods.getHospital().call();
-          if (this.state.account === hospital) {
-              this.setState({isHospital : true});
+          const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call();
+          if (hospitalMember) {
+            this.setState({isHospital : true});
           }
-
-          const prefecture = await this.state.CivilStateInstance.methods.getPrefecture().call();
-          if (this.state.account === prefecture) {
-              this.setState({isPrefecture : true});
+    
+          const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call();
+          if (prefectureMember) {
+            this.setState({isPrefecture : true});
           }
-
-          const cityHall = await this.state.CivilStateInstance.methods.getCityHall().call();
-          if (this.state.account === cityHall) {
-              this.setState({isCityHall : true});
-          }
-
-          // Get the value from the contract to prove it worked.
-          let hospitalAddr = await this.state.CivilStateInstance.methods.getHospital().call();
-
-          // Update state with the result.
-          this.setState({ hospital: hospitalAddr });
-          
+    
+          const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
+          if (cityHallMember) {
+            this.setState({isCityHall : true});
+          }       
     
         } catch (error) {
           // Catch any errors for any of the above operations.
@@ -150,7 +138,9 @@ class AddBirth extends Component {
 
     render() {
         let menu;
-        if (this.state.isHospital) {
+        if (this.state.isAdmin) {
+          menu = <NavigationAdmin />
+        } else if (this.state.isHospital) {
           menu = <NavigationHospital />
         } else if (this.state.isPrefecture) {
           menu = <NavigationPrefecture />
@@ -158,7 +148,7 @@ class AddBirth extends Component {
           menu = <NavigationCityHall />
         } else {
           menu = <Navigation />
-        }        
+        }       
         
         if (!this.state.web3) {      
           return (
@@ -257,7 +247,9 @@ class AddBirth extends Component {
               </Button>
 
               <div>
-                Your birth id is {this.state.birthId}
+                The last birth id added is {this.state.birthId}
+                    Name : {this.state.name}
+                    Last name : {this.state.lastName}
               </div>
 
             </div>

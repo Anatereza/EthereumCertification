@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import CivilStateContract from "../contracts/CivilState.json";
+import CivilStateContractV2 from "../contracts/CivilStateV2.json";
 import getWeb3 from "../getWeb3";
 
 import "../App.css"
 
+import NavigationAdmin from './NavigationAdmin';
 import NavigationHospital from './NavigationHospital';
 import NavigationPrefecture from './NavigationPrefecture';
 import NavigationCityHall from './NavigationCityHall';
@@ -18,7 +19,9 @@ class Home extends Component {
       CivilStateInstance: undefined,
       account: null,
       web3: null,
-      isOwner: false,
+      owner: null,
+      hospitalMemberName: '',
+      isAdmin: false,
       isHospital: false,
       isPrefecture: false,
       isCityHall: false
@@ -42,9 +45,9 @@ class Home extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = CivilStateContract.networks[networkId];
+      const deployedNetwork = CivilStateContractV2.networks[networkId];
       const instance = new web3.eth.Contract(
-        CivilStateContract.abi, 
+        CivilStateContractV2.abi, 
         deployedNetwork && deployedNetwork.address,
       );
 
@@ -56,29 +59,26 @@ class Home extends Component {
       //Verify if hospital, prefecture, city hall or citizen
       const owner = await this.state.CivilStateInstance.methods.getOwner().call();
       if (this.state.account === owner) {
-        this.setState({isOwner : true});
+        this.setState({isAdmin : true});
       }
 
-      const hospital = await this.state.CivilStateInstance.methods.getHospital().call();
-      if (this.state.account === hospital) {
+      this.setState({owner : owner});
+
+      const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call();
+      if (this.state.account === hospitalMember) {
         this.setState({isHospital : true});
       }
-
-      const prefecture = await this.state.CivilStateInstance.methods.getPrefecture().call();
-      if (this.state.account === prefecture) {
+            
+      /*
+      const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call();
+      if (prefectureMember === true) {
         this.setState({isPrefecture : true});
       }
 
-      const cityHall = await this.state.CivilStateInstance.methods.getCityHall().call();
-      if (this.state.account === cityHall) {
+      const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
+      if (cityHallMember == true) {
         this.setState({isCityHall : true});
-      }
-
-      // Get the value from the contract to prove it worked.
-      let hospitalAddr = await this.state.CivilStateInstance.methods.getHospital().call();
-
-      // Update state with the result.
-      this.setState({ hospital: hospitalAddr });
+      }*/
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -91,7 +91,9 @@ class Home extends Component {
 
   render() {
     let menu;
-    if (this.state.isHospital) {
+    if (this.state.isAdmin) {
+      menu = <NavigationAdmin />
+    } else if (this.state.isHospital) {
       menu = <NavigationHospital />
     } else if (this.state.isPrefecture) {
       menu = <NavigationPrefecture />
@@ -129,16 +131,24 @@ class Home extends Component {
         <div className="home">
           WELCOME TO IDENTITY SYSTEM
           <div>
-          Made by BE
+          Made by Ana Tereza Mascarenhas
           </div>
 
           <div>
-          Your user is {this.state.account} and the hospital address is {this.state.hospital}
+          Your user is {this.state.account}
+          The owner is {this.state.owner}
+          Are you a hospital member ? {this.state.isHospital} MY ANWSER
+          Are you admin ? {this.state.isAdmin} MY ANSWER
           </div>          
 
+          {this.state.isAdmin ?
+          <div> You are the admin</div> :
+          <div> Start exploring ! </div>
+          }
+
           {this.state.isHospital ?
-          <div> Yes you are the hospital</div> :
-          <div> No you are not the HOSPITAL</div>
+          <div> You are the hospital</div> :
+          <div> You are not the hospital </div>
           }
         </div>
 

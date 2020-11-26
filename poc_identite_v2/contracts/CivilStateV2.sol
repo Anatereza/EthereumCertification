@@ -9,7 +9,7 @@ contract CivilStateV2 {
     /*
         Public owner variable => the creator of the contract when it is initialized.
     */
-    address payable public owner;
+    address public owner;
 
     /*
         Birth struct : add birth information
@@ -332,28 +332,38 @@ contract CivilStateV2 {
         return owner;
     }
 
-    function isHospitalMember() public view returns(bool isMember){
+    function getHospitalMemberName(address _address) public view returns(string memory _name) {
+        return hospitalMembers[_address].name;
+    }
+
+    function isHospitalMember() public view returns(address){
+        address memberAddress;
         if (bytes(hospitalMembers[msg.sender].name).length > 0) {
-            isMember = true;
+            memberAddress = msg.sender;
         } else {
-            isMember = false;
+            memberAddress = 0x0000000000000000000000000000000000000000;
         }
+        return memberAddress;
     }
 
-    function isPrefectureMember() public view returns(bool isMember){
+    function isPrefectureMember() public view returns(address){
+        address memberAddress;
         if (bytes(prefectureMembers[msg.sender].name).length > 0) {
-            isMember = true;
+            memberAddress = msg.sender;
         } else {
-            isMember = false;
+            memberAddress = 0x0000000000000000000000000000000000000000;
         }
+        return memberAddress;
     }
 
-    function isCityHallisPrefectureMember() public view returns(bool isMember){
+    function isCityHallMember() public view returns(address){
+        address memberAddress;
         if (bytes(cityHallMembers[msg.sender].name).length > 0) {
-            isMember = true;
+            memberAddress = msg.sender;
         } else {
-            isMember = false;
+            memberAddress = 0x0000000000000000000000000000000000000000;
         }
+        return memberAddress;
     }
 
 }
