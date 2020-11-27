@@ -19,8 +19,6 @@ class Home extends Component {
       CivilStateInstance: undefined,
       account: null,
       web3: null,
-      owner: null,
-      hospitalMemberName: '',
       isAdmin: false,
       isHospital: false,
       isPrefecture: false,
@@ -51,9 +49,7 @@ class Home extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
-      // account[0] = default account used by metamask
+      // Set web3, accounts, and contract to the state
       this.setState({ CivilStateInstance: instance, web3: web3, account: accounts[0] });
 
       //Verify if hospital, prefecture, city hall or citizen
@@ -62,23 +58,20 @@ class Home extends Component {
         this.setState({isAdmin : true});
       }
 
-      this.setState({owner : owner});
-
-      const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call();
+      const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call({from : this.state.account});
       if (this.state.account === hospitalMember) {
         this.setState({isHospital : true});
       }
-            
-      /*
-      const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call();
-      if (prefectureMember === true) {
-        this.setState({isPrefecture : true});
-      }
 
-      const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
-      if (cityHallMember == true) {
+      const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call({from : this.state.account});
+      if (this.state.account === prefectureMember) {
+        this.setState({isPrefecture : true});
+      }  
+      
+      const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call({from : this.state.account});
+      if (this.state.account === cityHallMember) {
         this.setState({isCityHall : true});
-      }*/
+      }
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -121,7 +114,7 @@ class Home extends Component {
         <div className="IdentityDetails">
           <div className="IdentityDetails-title">
             <h1>
-              PORTAL
+              IDENTITY SYSTEM PORTAL
             </h1>
           </div>
         </div>
@@ -129,16 +122,14 @@ class Home extends Component {
        
 
         <div className="home">
-          WELCOME TO IDENTITY SYSTEM
+          WELCOME TO THE IDENTITY SYSTEM
+          
           <div>
           Made by Ana Tereza Mascarenhas
           </div>
 
           <div>
           Your user is {this.state.account}
-          The owner is {this.state.owner}
-          Are you a hospital member ? {this.state.isHospital} MY ANWSER
-          Are you admin ? {this.state.isAdmin} MY ANSWER
           </div>          
 
           {this.state.isAdmin ?
@@ -147,9 +138,19 @@ class Home extends Component {
           }
 
           {this.state.isHospital ?
-          <div> You are the hospital</div> :
-          <div> You are not the hospital </div>
+          <div> You are a member of the hospital</div> :
+          <div> You are not a member of the hospital </div>
           }
+
+          {this.state.isPrefecture ?
+          <div> You are a member of the prefecture</div> :
+          <div> You are not a member of the prefecture </div>
+          } 
+
+          {this.state.isCityHall ?
+          <div> You are a member of the city hall</div> :
+          <div> You are not a member of the city hall</div>
+          } 
         </div>
 
         

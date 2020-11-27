@@ -12,7 +12,7 @@ import NavigationCityHall from './NavigationCityHall';
 import Navigation from './Navigation';
 
 
-class AddBirth extends Component {
+class GenerateCertification extends Component {
     constructor(props) {
         super(props)
     
@@ -20,54 +20,37 @@ class AddBirth extends Component {
           CivilStateInstance: undefined,
           account: null,
           web3: null,
-          name :'',
-          lastName : '',
-          createdName: '',
-          createdLastName: '',
-          birthDate : '',
-          birthCity : '',
+          login :'',
+          password : '',
+          certificationHash: null,
           isAdmin: false,
           isHospital: false,
           isPrefecture: false,
           isCityHall: false,
-          birthId: null
         }
     
     }
 
     
-    updateName = event => {
-        this.setState({ name : event.target.value});
+    updateLogin = event => {
+        this.setState({ login : event.target.value});
     }
 
-    updateLastName = event => {
-        this.setState({ lastName : event.target.value});
+    updatePassword = event => {
+        this.setState({ password : event.target.value});
     }    
 
-    updateBirthDate = event => {
-        this.setState({ birthDate : event.target.value});
-    }
-    
-    updateBirthCity = event => {
-        this.setState({ birthCity : event.target.value});
+    getCertification =  async() =>  {
+      const hash = await  this.state.CivilStateInstance.methods.getCertification(this.state.login).call();
+      this.setState({certificationHash : hash});
     }
 
-    getBirthId =  async() =>  {
-      const response = await  this.state.CivilStateInstance.methods.getBirthId().call();
-      // response :  uint _birthId, string memory _name, string memory _lastName
-      const _birthId = response[0];
-      const _name = response[1];
-      const _lastName = response[2];
-      this.setState({birthId : _birthId, createdName : _name, createdLastName: _lastName});
-    }
-
-    addBirthToBlockchain = async() =>  {
+    generateCertificationInBlockchain = async() =>  {
       try {  
-        await this.state.CivilStateInstance.methods.addBirth(
-              this.state.name,
-              this.state.lastName,
-              this.state.birthDate,
-              this.state.birthCity)
+        // generateIdCertification (string memory login, string memory pwd)  
+        await this.state.CivilStateInstance.methods.generateIdCertification(
+              this.state.login,
+              this.state.pwd)
               .send({
                   from : this.state.account,
                   gas: 1000000
@@ -164,21 +147,7 @@ class AddBirth extends Component {
                 {menu}
             </div>
           );
-        }
-
-        if (!this.state.web3) {      
-            return (
-              <div className="IdentityDetails">
-                  <div className="IdentityDetails-title">
-                    <h1>
-                      ONLY HOSPITAL CAN ACCESS
-                    </h1>
-                  </div>
-                  {menu}
-              </div>
-            );
-          }
-             
+        }             
 
         return (
           <div className="App">
@@ -186,7 +155,7 @@ class AddBirth extends Component {
             <div className="IdentityDetails">
               <div className="IdentityDetails-title">
                 <h1>
-                  Add Birth
+                  Generate identity certification
                 </h1>
               </div>
             </div>
@@ -194,72 +163,46 @@ class AddBirth extends Component {
            
             <div className="form">
               <FormGroup>
-                  <div className="form-label">Enter Name - </div>
+                  <div className="form-label">Login - </div>
                   <div className="form-input">
                       <FormControl
                         input = 'text'
-                        value = {this.state.name}
-                        onChange = {this.updateName}
+                        value = {this.state.login}
+                        onChange = {this.updateLogin}
                       />
                   </div>
               </FormGroup>
 
               <FormGroup>
-                  <div className="form-label">Enter Last Name - </div>
+                  <div className="form-label">Password - </div>
                   <div className="form-input">
                       <FormControl
                         input = 'text'
-                        value = {this.state.lastName}
-                        onChange = {this.updateLastName}
+                        value = {this.state.password}
+                        onChange = {this.updatePassword}
                       />
                   </div>
-              </FormGroup>
+              </FormGroup>     
 
-              <FormGroup>
-                  <div className="form-label">Enter birth date - </div>
-                  <div className="form-input">
-                      <FormControl
-                        input = 'text'
-                        value = {this.state.birthDate}
-                        onChange = {this.updateBirthDate}
-                      />
-                  </div>
-              </FormGroup>
-
-              <FormGroup>
-                  <div className="form-label">Enter birth city - </div>
-                  <div className="form-input">
-                      <FormControl
-                        input = 'text'
-                        value = {this.state.birthCity}
-                        onChange = {this.updateBirthCity}
-                      />
-                  </div>
-              </FormGroup>              
-
-              <Button onClick={this.addBirthToBlockchain} className="button-addbirth">
-                  Add birth
+              <Button onClick={this.generateCertificationInBlockchain} className="button-generateCertification">
+                  Generate certification
               </Button>
 
 
             </div>
             
             <div className="result">
-              <Button onClick={this.getBirthId} className="button-birthId">
-                  Show birth id
+              <Button onClick={this.getCertification} className="button-getCertification">
+                  Show certification
               </Button>
+            
+              <div>
+                 You just generated the following certification : 
+              </div> 
 
               <div>
-                The last birth id added was {this.state.birthId}
+                 Certification hash : {this.state.certificationHash}
               </div>  
-
-              <div>
-                    Name : {this.state.createdName}
-              </div>
-
-              <div>      
-                    Last name : {this.state.createdLastName}
-              </div>
 
             </div>
           </div>
@@ -267,4 +210,4 @@ class AddBirth extends Component {
     }      
 
 }
-export default AddBirth;
+export default GenerateCertification;

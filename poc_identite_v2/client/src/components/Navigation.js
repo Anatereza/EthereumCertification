@@ -7,6 +7,8 @@ class Navigation extends Component {
            <div className='navbar'>
                <Link to ='/' className ="heading">HOME</Link>
                <Link to ='/MyIdentity'>IDENTITY</Link>
+               <Link to ='/GenerateCertification'>GENERATE CERTIFICATION</Link>
+               <Link to ='/VerifyCertification'>VERIFY CERTIFICATION</Link>
            </div> 
         );
     }

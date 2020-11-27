@@ -11,6 +11,8 @@ import AddMarriage from './components/AddMarriage';
 import AddHospitalMember from './components/AddHospitalMember';
 import AddPrefectureMember from './components/AddPrefectureMember';
 import AddCityHallMember from './components/AddCityHallMember';
+import GenerateCertification from './components/GenerateCertification';
+import VerifyCertification from './components/VerifyCertification';
 
 import {Router, Switch, Route } from 'react-router-dom';
 import history from './history';
@@ -27,7 +29,9 @@ ReactDOM.render(
            <Route path='/AddMarriage' component={AddMarriage} />
            <Route path='/AddHospitalMember' component={AddHospitalMember} /> 
            <Route path='/AddPrefectureMember' component={AddPrefectureMember} />
-           <Route path='/AddCityHallMember' component={AddCityHallMember} />                       
+           <Route path='/AddCityHallMember' component={AddCityHallMember} />      
+           <Route path='/GenerateCertification' component={GenerateCertification} />
+           <Route path='/VerifyCertification' component={VerifyCertification} />                             
         </Switch>
     </Router>,    
     document.getElementById('root')

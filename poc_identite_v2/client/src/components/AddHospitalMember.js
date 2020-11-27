@@ -94,29 +94,29 @@ class AddHospitalMember extends Component {
           );
 
           // Set web3, accounts, and contract to the state
-          // account[0] = default account used by metamask
           this.setState({ CivilStateInstance: instance, web3: web3, account: accounts[0] });
 
           //Verify if hospital, prefecture, city hall or citizen
           const owner = await this.state.CivilStateInstance.methods.getOwner().call();
           if (this.state.account === owner) {
-              this.setState({isAdmin : true});
+            this.setState({isAdmin : true});
           }
 
-          // eslint-disable-next-line
-          const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call();
-          this.setState({isHospital : hospitalMember});
-          
-          /*
-          const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call();
-          if (prefectureMember === true) {
+          const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call({from : this.state.account});
+          if (this.state.account === hospitalMember) {
+            this.setState({isHospital : true});
+          }
+
+          const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call({from : this.state.account});
+          if (this.state.account === prefectureMember) {
             this.setState({isPrefecture : true});
-          }
-
-          const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
-          if (cityHallMember == true) {
+          }  
+          
+          const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call({from : this.state.account});
+          if (this.state.account === cityHallMember) {
             this.setState({isCityHall : true});
-          }*/      
+          }
+        
     
         } catch (error) {
           // Catch any errors for any of the above operations.

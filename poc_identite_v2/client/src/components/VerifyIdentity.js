@@ -43,7 +43,7 @@ class VerifyIdentity extends Component {
       const _idIdentity = response[0];
       const _name = response[1];
       const _lastName = response[2];
-      this.setState({birthId : _idIdentity, name : _name, lastName : _lastName});
+      this.setState({identityId : _idIdentity, name : _name, lastName : _lastName});
     }
 
     addIdentityToBlockchain = async() =>  {
@@ -92,24 +92,23 @@ class VerifyIdentity extends Component {
           //Verify if hospital, prefecture, city hall or citizen
           const owner = await this.state.CivilStateInstance.methods.getOwner().call();
           if (this.state.account === owner) {
-              this.setState({isAdmin : true});
+            this.setState({isAdmin : true});
           }
 
-          const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call();
-          if (hospitalMember) {
+          const hospitalMember = await this.state.CivilStateInstance.methods.isHospitalMember().call({from : this.state.account});
+          if (this.state.account === hospitalMember) {
             this.setState({isHospital : true});
           }
-    
-          const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call();
-          if (prefectureMember) {
+
+          const prefectureMember = await this.state.CivilStateInstance.methods.isPrefectureMember().call({from : this.state.account});
+          if (this.state.account === prefectureMember) {
             this.setState({isPrefecture : true});
-          }
-    
-          const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call();
-          if (cityHallMember) {
+          }  
+          
+          const cityHallMember = await this.state.CivilStateInstance.methods.isCityHallMember().call({from : this.state.account});
+          if (this.state.account === cityHallMember) {
             this.setState({isCityHall : true});
           }
-        
     
         } catch (error) {
           // Catch any errors for any of the above operations.
@@ -200,7 +199,13 @@ class VerifyIdentity extends Component {
 
               <div>
                 The last birth id added is {this.state.identityId}
+              </div>
+
+              <div>
                     Name : {this.state.name}
+              </div>
+
+              <div>      
                     Last name : {this.state.lastName}
               </div>
 

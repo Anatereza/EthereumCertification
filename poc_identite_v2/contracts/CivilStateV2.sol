@@ -36,7 +36,6 @@ contract CivilStateV2 {
         string deathDate;
 
         string userLogin;
-        string userPassword;
     }
 
     /*
@@ -44,7 +43,8 @@ contract CivilStateV2 {
     */
     struct Identifier {
         uint userIdentityCount;
-        string userPassword;
+        bytes32 userPassword;
+        bytes32 newCertification;
     }
 
     struct Authentification {
@@ -102,6 +102,8 @@ contract CivilStateV2 {
     event LogEventVerifyIdentity(uint birthId, uint identityId);
     // Event signaling that new marriage member was declared
     event LogEventDeclareMarriage(string marriageDate, uint identityId);
+    // Event signaling that a certification was generated
+    event LogEventCertificationGenerated(string login, bytes32 identity_hash);
 
 
     /*
@@ -233,8 +235,13 @@ contract CivilStateV2 {
         
         // Initialization of login and password
         string memory login = concatenate("login_", births[birthId].lastName);
+        login = concatenate(login, births[birthId].name);
+        login = concatenate(login, births[birthId].birthDate);
+        
         string memory password = concatenate("pwd_", births[birthId].birthDate);
+        bytes32 passwordHash = keccak256(bytes(password));
 
+        bytes32 lambdaCertification = keccak256(bytes("new"));
 
         identityId = identitiesCount++;
         identities[identityId] = Identity({
@@ -242,13 +249,13 @@ contract CivilStateV2 {
             maritalStatus : "single",
             marriageDate: "",
             deathDate: "",
-            userLogin: login,
-            userPassword: password
+            userLogin: login
         });
 
         citizenIdentifiers[login] = Identifier({
             userIdentityCount : identityId,
-            userPassword : password
+            userPassword : passwordHash,
+            newCertification : lambdaCertification
         });
 
         emit LogEventVerifyIdentity(birthId, identityId);
@@ -279,19 +286,36 @@ contract CivilStateV2 {
     }
 
     /*
+        Function to allow citizen to modify password
+    */
+    function modifyMyPassword (string memory _login, string memory _oldPwd, string memory _newPwd) public{
+        //Verify that the user used the good password
+        require (citizenIdentifiers[_login].userPassword == keccak256(bytes(_oldPwd)));
+        bytes32 newPwd = keccak256(bytes(_newPwd));
+        citizenIdentifiers[_login].userPassword = newPwd;
+    }
+
+    /*
         Function to allow citizen to generete an identity certification
     */
     function generateIdCertification (string memory login, string memory pwd) public returns (bytes32){
         //Verify that the user used the good password
-        require (keccak256(bytes(citizenIdentifiers[login].userPassword)) == keccak256(bytes(pwd)));
+        require (citizenIdentifiers[login].userPassword == keccak256(bytes(pwd)));
         // Get the user identity count
         uint userIdCount = citizenIdentifiers[login].userIdentityCount;
         string memory userIdCountString = uintToString(userIdCount);
         string memory contIdentifiers = concatenate(userIdCountString, pwd);
         bytes32 identity_hash = keccak256(bytes(contIdentifiers));
+        citizenIdentifiers[login].newCertification = identity_hash;
         // add certification to mapping
         idCertifications[identity_hash] = citizenIdentifiers[login];
+        emit LogEventCertificationGenerated(login, identity_hash);
         return identity_hash;
+    }
+    
+    // function to get the lastCertification
+    function getCertification(string memory _login) public view returns (bytes32) {
+        return citizenIdentifiers[_login].newCertification;
     }
     
 
