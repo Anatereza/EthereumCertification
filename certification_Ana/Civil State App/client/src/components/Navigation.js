@@ -1,0 +1,21 @@
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
+class Navigation extends Component {
+    render() {
+        return (
+           <div className='navbar'>
+               <Link to ='/' className ="heading">HOME</Link>
+               <div> | </div>
+               <Link to ='/GenerateCertification'>GENERATE CERTIFICATION</Link>
+               <div> | </div>
+               <Link to ='/VerifyCertification'>VERIFY CERTIFICATION</Link>           
+               <div> | </div>
+               <Link to ='/UpdateMyPassword'>UPDATE PASSWORD</Link>
+           </div> 
+        );
+    }
+
+}
+
+export default Navigation;
