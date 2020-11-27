@@ -7,8 +7,10 @@ class NavigationCityHall extends Component {
            <div className='navbar'>
                <div className="CityHall">CITY HALL</div>
                <Link to ='/' className ="heading">HOME</Link>
-               <Link to ='/IdentityDetails'>IDENTITIES</Link>
-               <Link to ='/AddMarriage'>MARRIAGE</Link>               
+               <div> | </div>
+               <Link to ='/IdentityDetails'>CHECK IDENTITIES</Link>
+               <div> | </div>
+               <Link to ='/AddMarriage'>DECLARE MARRIAGE</Link>               
            </div> 
         );
     }

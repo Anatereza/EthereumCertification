@@ -7,9 +7,12 @@ class NavigationAdmin extends Component {
            <div className='navbar'>
                <div className="Admin">ADMIN</div>
                <Link to ='/' className ="heading">HOME</Link>
+               <div> | </div>
                <Link to ='/AddHospitalMember'>ADD HOSPITAL MEMBER</Link>
+               <div> | </div>
                <Link to ='/AddPrefectureMember'>ADD PREFECTURE MEMBER</Link>
-               <Link to ='/AddCityHallMember'>ADD CITY HALL</Link>               
+               <div> | </div>
+               <Link to ='/AddCityHallMember'>ADD CITY HALL MEMBER</Link>               
            </div> 
         );
     }

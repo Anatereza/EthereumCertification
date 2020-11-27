@@ -7,8 +7,10 @@ class NavigationHospital extends Component {
            <div className='navbar'>
                <div className="Hospital">HOSPITAL</div>
                <Link to ='/' className ="heading">HOME</Link>
-               <Link to ='/BirthDetails'>BIRTHS</Link>
-               <Link to ='/AddBirth'>ADD BIRTH</Link>
+               <div> | </div>
+               <Link to ='/BirthDetails'>CHECK BIRTHS</Link>
+               <div> | </div>
+               <Link to ='/AddBirth'>ADD NEW BIRTH</Link>
            </div> 
         );
     }

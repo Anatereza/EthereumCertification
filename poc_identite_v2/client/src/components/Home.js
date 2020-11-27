@@ -99,8 +99,8 @@ class Home extends Component {
 
     if (!this.state.web3) {      
       return (
-        <div className="IdentityDetails">
-            <div className="IdentityDetails-title">
+        <div className="IdentitySystem">
+            <div className="IdentitySystem-title">
               <h1>
                 Loading Web3, accounts, and contract...
               </h1>
@@ -111,8 +111,8 @@ class Home extends Component {
     }
     return (
       <div className="App">
-        <div className="IdentityDetails">
-          <div className="IdentityDetails-title">
+        <div className="IdentitySystem">
+          <div className="IdentitySystem-title">
             <h1>
               IDENTITY SYSTEM PORTAL
             </h1>
@@ -122,35 +122,27 @@ class Home extends Component {
        
 
         <div className="home">
-          WELCOME TO THE IDENTITY SYSTEM
+          
+        <div> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ </div>          
+
+          <div>
+            
+            WELCOME TO THE IDENTITY SYSTEM
+
+          </div>
+          
+        <div> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ </div>  
           
           <div>
           Made by Ana Tereza Mascarenhas
           </div>
 
           <div>
-          Your user is {this.state.account}
+
+          Your are currently using the address : {this.state.account}
+
           </div>          
-
-          {this.state.isAdmin ?
-          <div> You are the admin</div> :
-          <div> Start exploring ! </div>
-          }
-
-          {this.state.isHospital ?
-          <div> You are a member of the hospital</div> :
-          <div> You are not a member of the hospital </div>
-          }
-
-          {this.state.isPrefecture ?
-          <div> You are a member of the prefecture</div> :
-          <div> You are not a member of the prefecture </div>
-          } 
-
-          {this.state.isCityHall ?
-          <div> You are a member of the city hall</div> :
-          <div> You are not a member of the city hall</div>
-          } 
+ 
         </div>
 
         

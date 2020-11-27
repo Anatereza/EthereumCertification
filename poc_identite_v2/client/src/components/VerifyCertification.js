@@ -188,6 +188,10 @@ class VerifyCertification extends Component {
 
             </div>
             
+            <div>
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            </div>
+
             <div className="result">
           
               <div>

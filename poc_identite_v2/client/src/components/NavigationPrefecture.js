@@ -7,9 +7,12 @@ class NavigationPrefecture extends Component {
            <div className='navbar'>
                <div className="Prefecture">PREFECTURE</div>
                <Link to ='/' className ="heading">HOME</Link>
-               <Link to ='/BirthDetails'>BIRTHS</Link>
+               <div> | </div>
+               <Link to ='/BirthDetails'>CHECK BIRTHS</Link>
+               <div> | </div>
                <Link to ='/VerifyIdentity'>VERIFY IDENTITY</Link>
-               <Link to ='/IdentityDetails'>IDENTITIES</Link>               
+               <div> | </div>
+               <Link to ='/IdentityDetails'>CHECK IDENTITIES</Link>               
            </div> 
         );
     }

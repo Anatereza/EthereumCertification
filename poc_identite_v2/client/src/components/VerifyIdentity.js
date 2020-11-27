@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import CivilStateContractV2 from "../contracts/CivilStateV2.json";
 import getWeb3 from "../getWeb3";
 
-// FormGroup to take input from user
-import { FormGroup, FormControl, Button } from 'react-bootstrap';
+// Button ton validate action
+import { Button } from 'react-bootstrap';
 
 import NavigationAdmin from './NavigationAdmin';
 import NavigationHospital from './NavigationHospital';
@@ -27,7 +27,9 @@ class VerifyIdentity extends Component {
           isPrefecture: false,
           isCityHall: false,
           birthId: null,
-          identityId: null
+          identityId: null,
+          verifiedBirthList: [],
+          toVerifyBirthList: []
         }
     
     }
@@ -46,9 +48,10 @@ class VerifyIdentity extends Component {
       this.setState({identityId : _idIdentity, name : _name, lastName : _lastName});
     }
 
-    addIdentityToBlockchain = async() =>  {
+
+    addIdentityToBlockchain = param => async () => {
       try {  
-        await this.state.CivilStateInstance.methods.createIdentity(this.state.birthId).send({
+        await this.state.CivilStateInstance.methods.createIdentity(param).send({
                   from : this.state.account,
                   gas: 1000000
               })      
@@ -62,6 +65,35 @@ class VerifyIdentity extends Component {
           );
           console.error(error);
           }  
+    }
+
+    contructBirthList = async () => {
+      const birthCountBlockchain = await this.state.CivilStateInstance.methods.getBirthsCount().call({from : this.state.account});
+        for (let i = 0; i < birthCountBlockchain; i++) {
+          //  readBirth(uint birthId) 
+          //returns(string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, bool _isVerified)
+          const response = await this.state.CivilStateInstance.methods.readBirth(i).call({from : this.state.account});
+          const _name = response[0];
+          const _lastName = response[1];
+          const _birthDate = response[2];
+          const _birthCity = response[3];
+          //const _isVerified = true | false;
+          const _isVerified = response[4];
+          // eslint-disable-next-line
+          let _verification = '';
+          if (!_isVerified) {
+            // eslint-disable-next-line
+            _verification = 'To verify';
+            const toVerifyBirth = {name : _name, lastName : _lastName, birthDate: _birthDate, birthCity : _birthCity, verification : _verification, birthId: i}
+            this.setState({toVerifyBirthList : [...this.state.toVerifyBirthList, toVerifyBirth]});
+          } else {
+            // eslint-disable-next-line
+            _verification = 'Verified';
+            const verifiedBirth = {name : _name, lastName : _lastName, birthDate: _birthDate, birthCity : _birthCity, verification : _verification}
+            this.setState({verifiedBirthList : [...this.state.verifiedBirthList, verifiedBirth]});            
+          }       
+      }
+
     }
 
     componentDidMount = async () => {
@@ -109,7 +141,10 @@ class VerifyIdentity extends Component {
           if (this.state.account === cityHallMember) {
             this.setState({isCityHall : true});
           }
-    
+          
+          // Construct list of births
+          this.contructBirthList();          
+          
         } catch (error) {
           // Catch any errors for any of the above operations.
           alert(
@@ -171,34 +206,42 @@ class VerifyIdentity extends Component {
               </div>
             </div>
             {menu}
-           
-            <div className="form">
-              <FormGroup>
-                  <div className="form-label">Enter birth id to verify - </div>
-                  <div className="form-input">
-                      <FormControl
-                        input = 'text'
-                        value = {this.state.identityId}
-                        onChange = {this.updateIdentity}
-                      />
-                  </div>
-              </FormGroup>
-    
 
-              <Button onClick={this.addIdentityToBlockchain} className="button-addidentity">
-                  Verify identity
-              </Button>
-
-
+            <div className="BirthsToVerify">
+                <div className="BirthsToVerify-title">
+                  <h1>
+                    Identities to verify
+                  </h1>
+                </div>
+                
+                {this.state.toVerifyBirthList.map((data) => (
+                    <p>
+                       <p>Name : {data.name}</p>
+                       <p>Last name : {data.lastName}</p>
+                       <p>Birth date : {data.birthDate}</p>
+                       <p>Birth city : {data.birthCity}</p>
+                       <p>Birth status : {data.verification}</p>                    
+                       <p>
+                            <Button onClick={this.addIdentityToBlockchain(data.birthId)} className="button-addidentity">
+                                Verify identity
+                            </Button>
+                       </p>
+                    </p>
+                ))}
             </div>
             
             <div className="result">
+            
+            <div>
+                --- ---- --- --- --- --- --- --- 
+            </div>
+
               <Button onClick={this.getIdentityId} className="button-birthId">
-                  Show identity id
+                  Show added identity 
               </Button>
 
               <div>
-                The last birth id added is {this.state.identityId}
+                The last identity verified : 
               </div>
 
               <div>
@@ -210,6 +253,11 @@ class VerifyIdentity extends Component {
               </div>
 
             </div>
+
+            <div>
+                --- ---- --- --- --- --- --- --- 
+            </div>      
+
           </div>
         );
     }      

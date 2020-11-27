@@ -190,6 +190,10 @@ class GenerateCertification extends Component {
 
 
             </div>
+
+            <div>
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            </div>
             
             <div className="result">
               <Button onClick={this.getCertification} className="button-getCertification">

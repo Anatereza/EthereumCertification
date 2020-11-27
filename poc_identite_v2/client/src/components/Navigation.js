@@ -6,11 +6,12 @@ class Navigation extends Component {
         return (
            <div className='navbar'>
                <Link to ='/' className ="heading">HOME</Link>
-               <Link to ='/MyIdentity'>IDENTITY</Link>
-               <Link to ='/UpdateMyPassword'>UPDATE PASSWORD</Link>
+               <div> | </div>
                <Link to ='/GenerateCertification'>GENERATE CERTIFICATION</Link>
-               <Link to ='/VerifyCertification'>VERIFY CERTIFICATION</Link>
-
+               <div> | </div>
+               <Link to ='/VerifyCertification'>VERIFY CERTIFICATION</Link>           
+               <div> | </div>
+               <Link to ='/UpdateMyPassword'>UPDATE PASSWORD</Link>
            </div> 
         );
     }

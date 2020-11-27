@@ -245,12 +245,17 @@ class AddBirth extends Component {
             </div>
             
             <div className="result">
+            
+              <div>
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              </div>
+
               <Button onClick={this.getBirthId} className="button-birthId">
                   Show birth id
               </Button>
 
               <div>
-                The last birth id added was {this.state.birthId}
+                The last birth id added was number : {this.state.birthId}
               </div>  
 
               <div>
