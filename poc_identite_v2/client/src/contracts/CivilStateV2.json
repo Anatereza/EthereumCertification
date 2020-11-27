@@ -30702,10 +30702,145 @@
       "links": {},
       "address": "0x5E76a22d656E4151fA930c8AADFF7bB4aECe1601",
       "transactionHash": "0xa75f445f60a94a1e16d17bc03be4a7967a64fdb9594da6dc3d16753411f714cd"
+    },
+    "1606466833813": {
+      "events": {
+        "0x401ac4b35a7b6689f6099149d9a4590d106d0b7850a038645519383db1f9e5aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memberName",
+              "type": "string"
+            }
+          ],
+          "name": "LogEventAddCityHallMember",
+          "type": "event",
+          "signature": "0x401ac4b35a7b6689f6099149d9a4590d106d0b7850a038645519383db1f9e5aa"
+        },
+        "0xab3562bab9e824ea5bd0d7e0ef837e93d1f7a8f3ee468ae9cb2c04d960bfc6d4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memberName",
+              "type": "string"
+            }
+          ],
+          "name": "LogEventAddHospitalMember",
+          "type": "event",
+          "signature": "0xab3562bab9e824ea5bd0d7e0ef837e93d1f7a8f3ee468ae9cb2c04d960bfc6d4"
+        },
+        "0xa7b9cf10953e89fba48615bdedc4c557e19daee10f4f77f3ab1a2d2bb951a041": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memberName",
+              "type": "string"
+            }
+          ],
+          "name": "LogEventAddPrefectureMember",
+          "type": "event",
+          "signature": "0xa7b9cf10953e89fba48615bdedc4c557e19daee10f4f77f3ab1a2d2bb951a041"
+        },
+        "0x975e5fd57c7c0e6b1a8c1a5d6861dce72c6672a93848401afb36caa4eb90ba83": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "lastName",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "birthId",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogEventBirthAdded",
+          "type": "event",
+          "signature": "0x975e5fd57c7c0e6b1a8c1a5d6861dce72c6672a93848401afb36caa4eb90ba83"
+        },
+        "0xb3c104ebb8d7c2039282f84239773ba591395f85016526077eeab6912a11dda4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "login",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "identity_hash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogEventCertificationGenerated",
+          "type": "event",
+          "signature": "0xb3c104ebb8d7c2039282f84239773ba591395f85016526077eeab6912a11dda4"
+        },
+        "0xc7b118d015ed4a95450d7ff616d44d5a9ff7ad9d46e3360ac8ae088efd6a5552": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "marriageDate",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "identityId",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogEventDeclareMarriage",
+          "type": "event",
+          "signature": "0xc7b118d015ed4a95450d7ff616d44d5a9ff7ad9d46e3360ac8ae088efd6a5552"
+        },
+        "0x742c345840647c71e989bcfe501f009faa76e04998bb4c2ea8b4adc5ac065999": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "birthId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "identityId",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogEventVerifyIdentity",
+          "type": "event",
+          "signature": "0x742c345840647c71e989bcfe501f009faa76e04998bb4c2ea8b4adc5ac065999"
+        }
+      },
+      "links": {},
+      "address": "0xd82996895fC9c1E99815B4D5078D621CEffE0bfa",
+      "transactionHash": "0x8b54f2659f8ddeb2d755932c5989ca367d24870971338f2c0cbec62c1dc977ac"
     }
   },
   "schemaVersion": "3.0.22",
-  "updatedAt": "2020-11-27T08:23:44.774Z",
+  "updatedAt": "2020-11-27T08:48:43.093Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

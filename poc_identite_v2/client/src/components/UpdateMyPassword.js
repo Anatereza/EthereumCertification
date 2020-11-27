@@ -12,7 +12,7 @@ import NavigationCityHall from './NavigationCityHall';
 import Navigation from './Navigation';
 
 
-class GenerateCertification extends Component {
+class UpdateMyPassword extends Component {
     constructor(props) {
         super(props)
     
@@ -21,8 +21,8 @@ class GenerateCertification extends Component {
           account: null,
           web3: null,
           login :'',
-          password : '',
-          certificationHash: null,
+          oldPassword : '',
+          newPassword: '',
           isAdmin: false,
           isHospital: false,
           isPrefecture: false,
@@ -36,26 +36,26 @@ class GenerateCertification extends Component {
         this.setState({ login : event.target.value});
     }
 
-    updatePassword = event => {
-        this.setState({ password : event.target.value});
+    updateOldPassword = event => {
+        this.setState({ oldPassword : event.target.value});
     }    
 
-    getCertification =  async() =>  {
-      const hash = await  this.state.CivilStateInstance.methods.getCertification(this.state.login).call();
-      this.setState({certificationHash : hash});
-    }
+    updateNewPassword = event => {
+        this.setState({ newPassword : event.target.value});
+    }    
 
-    generateCertificationInBlockchain = async() =>  {
+    modifyPasswordInBlockchain = async() =>  {
       try {  
-        // generateIdCertification (string memory login, string memory pwd)  
-        await this.state.CivilStateInstance.methods.generateIdCertification(
+        // (string memory _login, string memory _oldPwd, string memory _newPwd)
+        await this.state.CivilStateInstance.methods.modifyMyPassword(
               this.state.login,
-              this.state.password)
+              this.state.oldPassword,
+              this.state.newPassword)
               .send({
                   from : this.state.account,
                   gas: 1000000
               })
-        alert('A certification was generated');
+        alert('Password was modified');
       } catch (error) {
           // Catch any errors for any of the above operations.
           alert(
@@ -155,7 +155,7 @@ class GenerateCertification extends Component {
             <div className="IdentityDetails">
               <div className="IdentityDetails-title">
                 <h1>
-                  Generate identity certification
+                  Update my password
                 </h1>
               </div>
             </div>
@@ -174,40 +174,37 @@ class GenerateCertification extends Component {
               </FormGroup>
 
               <FormGroup>
-                  <div className="form-label">Password - </div>
+                  <div className="form-label"> Enter current password - </div>
                   <div className="form-input">
                       <FormControl
                         input = 'text'
-                        value = {this.state.password}
-                        onChange = {this.updatePassword}
+                        value = {this.state.oldPassword}
+                        onChange = {this.updateOldPassword}
                       />
                   </div>
-              </FormGroup>     
+              </FormGroup>
 
-              <Button onClick={this.generateCertificationInBlockchain} className="button-generateCertification">
-                  Generate certification
+              <FormGroup>
+                  <div className="form-label"> Enter new password - </div>
+                  <div className="form-input">
+                      <FormControl
+                        input = 'text'
+                        value = {this.state.newPassword}
+                        onChange = {this.updateNewPassword}
+                      />
+                  </div>
+              </FormGroup>        
+
+              <Button onClick={this.modifyPasswordInBlockchain} className="button-generateCertification">
+                  Update my password
               </Button>
 
 
             </div>
             
-            <div className="result">
-              <Button onClick={this.getCertification} className="button-getCertification">
-                  Show certification
-              </Button>
-            
-              <div>
-                 You just generated the following certification : 
-              </div> 
-
-              <div>
-                 Certification hash : {this.state.certificationHash}
-              </div>  
-
-            </div>
           </div>
         );
     }      
 
 }
-export default GenerateCertification;
+export default UpdateMyPassword;

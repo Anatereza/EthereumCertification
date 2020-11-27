@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Home from './components/Home';
 import MyIdentity from './components/MyIdentity';
+import UpdateMyPassword from './components/UpdateMyPassword';
 import BirthDetails from './components/BirthDetails';
 import AddBirth from './components/AddBirth';
 import VerifyIdentity from './components/VerifyIdentity';
@@ -22,6 +23,7 @@ ReactDOM.render(
         <Switch>
            <Route exact path='/' component={Home} />
            <Route path='/MyIdentity' component={MyIdentity} />
+           <Route path='/UpdateMyPassword' component={UpdateMyPassword} />
            <Route path='/BirthDetails' component={BirthDetails} />
            <Route path='/AddBirth' component={AddBirth} />
            <Route path='/VerifyIdentity' component={VerifyIdentity} />
