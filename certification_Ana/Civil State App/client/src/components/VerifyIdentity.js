@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CivilStateContractV2 from "../contracts/CivilStateV2.json";
+import CivilStateContract from "../contracts/CivilState.json";
 import getWeb3 from "../getWeb3";
 
 // Button ton validate action
@@ -51,7 +51,7 @@ class VerifyIdentity extends Component {
 
     addIdentityToBlockchain = param => async () => {
       try {  
-        await this.state.CivilStateInstance.methods.createIdentity(param).send({
+        await this.state.CivilStateInstance.methods.verifyIdentity(param).send({
                   from : this.state.account,
                   gas: 1000000
               })      
@@ -112,9 +112,9 @@ class VerifyIdentity extends Component {
     
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
-          const deployedNetwork = CivilStateContractV2.networks[networkId];
+          const deployedNetwork = CivilStateContract.networks[networkId];
           const instance = new web3.eth.Contract(
-              CivilStateContractV2.abi, 
+              CivilStateContract.abi, 
               deployedNetwork && deployedNetwork.address,
           );
 

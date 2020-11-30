@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CivilStateContractV2 from "../contracts/CivilStateV2.json";
+import CivilStateContract from "../contracts/CivilState.json";
 import getWeb3 from "../getWeb3";
 
 // FormGroup to take input from user
@@ -75,9 +75,9 @@ class AddCityHallMember extends Component {
     
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
-          const deployedNetwork = CivilStateContractV2.networks[networkId];
+          const deployedNetwork = CivilStateContract.networks[networkId];
           const instance = new web3.eth.Contract(
-              CivilStateContractV2.abi, 
+              CivilStateContract.abi, 
               deployedNetwork && deployedNetwork.address,
           );
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CivilStateContractV2 from "../contracts/CivilStateV2.json";
+import CivilStateContract from "../contracts/CivilState.json";
 import getWeb3 from "../getWeb3";
 
 // FormGroup to take input from user
@@ -46,11 +46,6 @@ class AddHospitalMember extends Component {
     }
     
     
-    checkHospitalMemberFromBlockchain =  async() =>  {
-      const _name = await  this.state.CivilStateInstance.methods.getHospitalMemberName(this.state.address).call();
-      this.setState({name : _name});
-    }
-
     addHospitalMemberToBlockchain = async() =>  {
       try {  
         // addHospitalMember (address _newMember, string memory _memberName)
@@ -87,9 +82,9 @@ class AddHospitalMember extends Component {
     
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
-          const deployedNetwork = CivilStateContractV2.networks[networkId];
+          const deployedNetwork = CivilStateContract.networks[networkId];
           const instance = new web3.eth.Contract(
-              CivilStateContractV2.abi, 
+              CivilStateContract.abi, 
               deployedNetwork && deployedNetwork.address,
           );
 
@@ -208,27 +203,6 @@ class AddHospitalMember extends Component {
               <Button onClick={this.addHospitalMemberToBlockchain} className="button-addbirth">
                   Add hospital member
               </Button>
-            </div>
-
-            <div className="form2">
-              <FormGroup>
-                  <div className="form-label">Enter hospital address to check - </div>
-                  <div className="form-input">
-                      <FormControl
-                        input = 'text'
-                        value = {this.state.address}
-                        onChange = {this.updateAddress}
-                      />
-                  </div>
-              </FormGroup>
-
-              <Button onClick={this.checkHospitalMemberFromBlockchain} className="button-verifyHospitalMember">
-                  Check hospital member
-              </Button>
-            </div>
-
-            <div>
-              The hospital member name is {this.state.name}
             </div>
             
 

@@ -1,6 +1,6 @@
-var CivilStateV2 = artifacts.require("./CivilStateV2.sol")
+var CivilState = artifacts.require("./CivilState.sol")
 
 module.exports = function(deployer) {
 
-  deployer.deploy(CivilStateV2)
+  deployer.deploy(CivilState)
 };
