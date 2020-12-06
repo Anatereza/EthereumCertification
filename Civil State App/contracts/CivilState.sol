@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.8.0;
 
+import {LibConcatenateStrings} from './LibConcatenateStrings.sol';
+import {LibTransformUintString} from "./LibTransformUintString.sol";
+
+
 /*
     Libraries
  */
 
+/*
 library ConcatenateStrings {
     // Function to concatenate two strings
     function concatenate(string memory a, string  memory b) public pure returns(string memory) {
@@ -30,13 +35,13 @@ library TransformUintString {
         str = string(s);
     }    
 }
-
+*/
     /*
         The CivilState contract keeps track of the citizen information, starting from their birth and being maintained throughout their life
      */
 contract CivilState {
-    using ConcatenateStrings for *;
-    using TransformUintString for *;
+    using LibConcatenateStrings for *;
+    using LibTransformUintString for *;
 
     /*
         Public owner variable => the creator of the contract when it is initialized.
