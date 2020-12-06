@@ -24,6 +24,7 @@ contract('CivilState', function(accounts) {
         string birthCity;
         bool isVerified;
     }
+    // test
     */
 
     const citizenA = {
