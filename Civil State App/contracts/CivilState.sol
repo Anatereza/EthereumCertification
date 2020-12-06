@@ -1,10 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.8.0;
 
+/*
+    Libraries
+ */
+
+library ConcatenateStrings {
+    // Function to concatenate two strings
+    function concatenate(string memory a, string  memory b) public pure returns(string memory) {
+        return string(abi.encodePacked(a, b));
+    }
+}
+
+library TransformUintString {
+    // Function to transform a uint to a string
+    function uintToString(uint v) public pure returns (string memory str) {
+        uint maxlength = 100;
+        bytes memory reversed = new bytes(maxlength);
+        uint i = 0;
+        while (v != 0) {
+            uint remainder = v % 10;
+            v = v / 10;
+            reversed[i++] = byte(uint8(48 + remainder));
+        }
+        bytes memory s = new bytes(i + 1);
+        for (uint j = 0; j <= i; j++) {
+            s[j] = reversed[i - j];
+        }
+        str = string(s);
+    }    
+}
+
     /*
         The CivilState contract keeps track of the citizen information, starting from their birth and being maintained throughout their life
      */
 contract CivilState {
+    using ConcatenateStrings for *;
+    using TransformUintString for *;
 
     /*
         Public owner variable => the creator of the contract when it is initialized.
@@ -143,7 +175,7 @@ contract CivilState {
     }
     
     // Help functions 
-
+    /* use library instead
     // Function to concatenate strings
     function concatenate(string memory a, string  memory b) public pure returns(string memory) {
             return string(abi.encodePacked(a, b));
@@ -164,7 +196,7 @@ contract CivilState {
             s[j] = reversed[i - j];
         }
         str = string(s);
-    }
+    }*/
     
     // Admin functions
 
@@ -174,7 +206,8 @@ contract CivilState {
     */
     function addHospitalMember (address _newMember, string memory _memberName) public isAdmin {
         // Initialization of login
-        string memory _login = concatenate("login_", _memberName);        
+        string memory login = "login_";
+        string memory _login = login.concatenate( _memberName);       
         hospitalMembers[_newMember] = Authentification({
             login : _login,
             name : _memberName
@@ -188,7 +221,8 @@ contract CivilState {
     */
     function addPrefectureMember (address _newMember, string memory _memberName) public isAdmin {
         // Initialization of login
-        string memory _login = concatenate("login_", _memberName);
+        string memory login = "login_";
+        string memory _login = login.concatenate(_memberName); 
         prefectureMembers[_newMember] = Authentification({
             login : _login,
             name : _memberName
@@ -202,7 +236,8 @@ contract CivilState {
     */
     function addCityHallMember (address _newMember, string memory _memberName) public isAdmin {
         // Initialization of login
-        string memory _login = concatenate("login_", _memberName);
+        string memory login = "login_";
+        string memory _login = login.concatenate(_memberName); 
         cityHallMembers[_newMember] = Authentification({
             login : _login,
             name : _memberName
@@ -249,11 +284,12 @@ contract CivilState {
         births[birthId].isVerified = true;
         
         // Initialization of login and password
-        string memory login = concatenate("login_", births[birthId].lastName);
-        login = concatenate(login, births[birthId].name);
-        login = concatenate(login, births[birthId].birthDate);
+        string memory login = "login_";
+        string memory _login = login.concatenate(births[birthId].lastName); 
+        login = _login.concatenate(births[birthId].birthDate);        
         
-        string memory password = concatenate("pwd_", births[birthId].birthDate);
+        string memory pwd = "pwd_";
+        string memory password = pwd.concatenate(births[birthId].birthDate);
         bytes32 passwordHash = keccak256(bytes(password));
 
         bytes32 lambdaCertification = keccak256(bytes("new"));
@@ -318,8 +354,8 @@ contract CivilState {
         require (citizenIdentifiers[login].userPassword == keccak256(bytes(pwd)));
         // Get the user identity count
         uint userIdCount = citizenIdentifiers[login].userIdentityCount;
-        string memory userIdCountString = uintToString(userIdCount);
-        string memory contIdentifiers = concatenate(userIdCountString, pwd);
+        string memory userIdCountString = userIdCount.uintToString();
+        string memory contIdentifiers = userIdCountString.concatenate(pwd);
         bytes32 identity_hash = keccak256(bytes(contIdentifiers));
         citizenIdentifiers[login].newCertification = identity_hash;
         // add certification to mapping
