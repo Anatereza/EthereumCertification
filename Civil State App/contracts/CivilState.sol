@@ -1,47 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.8.0;
 
+//Libraries
 import {LibConcatenateStrings} from './LibConcatenateStrings.sol';
-import {LibTransformUintString} from "./LibTransformUintString.sol";
-
-
-/*
-    Libraries
- */
+import {LibTransformUintString} from './LibTransformUintString.sol';
+import {SafeMath} from './SafeMath.sol';
 
 /*
-library ConcatenateStrings {
-    // Function to concatenate two strings
-    function concatenate(string memory a, string  memory b) public pure returns(string memory) {
-        return string(abi.encodePacked(a, b));
-    }
-}
-
-library TransformUintString {
-    // Function to transform a uint to a string
-    function uintToString(uint v) public pure returns (string memory str) {
-        uint maxlength = 100;
-        bytes memory reversed = new bytes(maxlength);
-        uint i = 0;
-        while (v != 0) {
-            uint remainder = v % 10;
-            v = v / 10;
-            reversed[i++] = byte(uint8(48 + remainder));
-        }
-        bytes memory s = new bytes(i + 1);
-        for (uint j = 0; j <= i; j++) {
-            s[j] = reversed[i - j];
-        }
-        str = string(s);
-    }    
-}
+    The CivilState contract keeps track of the citizen information, starting from their birth and being maintained throughout their life
 */
-    /*
-        The CivilState contract keeps track of the citizen information, starting from their birth and being maintained throughout their life
-     */
 contract CivilState {
-    using LibConcatenateStrings for *;
+    using LibConcatenateStrings for string;
     using LibTransformUintString for *;
+    using SafeMath for uint; 
 
     /*
         Public owner variable => the creator of the contract when it is initialized.
@@ -177,32 +148,8 @@ contract CivilState {
 
     constructor () public {
         owner = msg.sender;
-    }
-    
-    // Help functions 
-    /* use library instead
-    // Function to concatenate strings
-    function concatenate(string memory a, string  memory b) public pure returns(string memory) {
-            return string(abi.encodePacked(a, b));
-    }
-
-    // Function to transform uint to string
-    function uintToString(uint v) public pure returns (string memory str) {
-        uint maxlength = 100;
-        bytes memory reversed = new bytes(maxlength);
-        uint i = 0;
-        while (v != 0) {
-            uint remainder = v % 10;
-            v = v / 10;
-            reversed[i++] = byte(uint8(48 + remainder));
-        }
-        bytes memory s = new bytes(i + 1);
-        for (uint j = 0; j <= i; j++) {
-            s[j] = reversed[i - j];
-        }
-        str = string(s);
-    }*/
-    
+    }    
+  
     // Admin functions
 
     /* 
@@ -212,7 +159,7 @@ contract CivilState {
     function addHospitalMember (address _newMember, string memory _memberName) public isAdmin {
         // Initialization of login
         string memory login = "login_";
-        string memory _login = login.concatenate( _memberName);       
+        string memory _login = login.concatenate(_memberName);       
         hospitalMembers[_newMember] = Authentification({
             login : _login,
             name : _memberName
@@ -256,7 +203,9 @@ contract CivilState {
         Only a hospital member can create a new birth
     */      
     function addBirth (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity) public isHospital returns(uint) {
-        uint birthId = birthsCount++;
+        //uint birthId = birthsCount++;
+        uint birthId = birthsCount;
+        birthsCount = birthsCount.add(1);
         births[birthId] = Birth({
             name : _name,
             lastName : _lastName,
@@ -270,13 +219,21 @@ contract CivilState {
 
     // Function to get the birthId after the creation of a new birth
     function getBirthId () public view returns (uint _birthId, string memory _name, string memory _lastName){
-        _name = "undefined";
-        _lastName = "undefined";
-        if (birthsCount >= 0) {
+        //_name = "undefined";
+        //_lastName = "undefined";
+        /*if (birthsCount >= 0) {
             _birthId = birthsCount - 1;
             _name = births[_birthId].name;
             _lastName = births[_birthId].lastName;
-        }    
+        }*/
+        if (birthsCount == 0) {
+          _birthId = birthsCount;  
+        } else {
+          _birthId = birthsCount.sub(1);  
+        }
+        _name = births[_birthId].name;
+        _lastName = births[_birthId].lastName;
+ 
     }
     
     /*
@@ -299,7 +256,9 @@ contract CivilState {
 
         bytes32 lambdaCertification = keccak256(bytes("new"));
 
-        identityId = identitiesCount++;
+        //identityId = identitiesCount++;
+        identityId = identitiesCount;
+        identitiesCount = identitiesCount.add(1);
         identities[identityId] = Identity({
             birthinfo : births[birthId],
             maritalStatus : "single",
@@ -318,13 +277,21 @@ contract CivilState {
 
     // Function to get the identityId after the verification of an identity
     function getIdentityId() public view returns (uint _identity, string memory _name, string memory _lastName){
-        _name = "undefined";
+        /*_name = "undefined";
         _lastName = "undefined";
         if (identitiesCount >= 0) {
             _identity = identitiesCount - 1;
             _name = identities[_identity].birthinfo.name;
             _lastName = identities[_identity].birthinfo.lastName;            
-        } 
+        }*/
+
+        if (identitiesCount == 0) {
+          _identity = identitiesCount;  
+        } else {
+          _identity = identitiesCount.sub(1);  
+        }
+        _name = identities[_identity].birthinfo.name;
+        _lastName = identities[_identity].birthinfo.lastName; 
     }
 
     /*
