@@ -15,9 +15,15 @@ contract CivilState {
     using SafeMath for uint; 
 
     /*
+        Circuit breaker pattern
+        Variable "stopped" : if true function functionnality cannot be executed
+    */
+    bool public stopped = false;
+    
+    /*
         Public owner variable => the creator of the contract when it is initialized.
     */
-    address public owner;
+    address payable public owner;
 
     /*
         Birth struct : add birth information
@@ -113,7 +119,19 @@ contract CivilState {
     // Event signaling that a certification was generated
     event LogEventCertificationGenerated(string login, bytes32 identity_hash);
 
+    // Modifiers
+        /*
+        Circuit breaker pattern
+        Modifiers
+    */
+    modifier stopInEmergency { 
+        require(!stopped); _; 
+    }
+    modifier onlyInEmergency { 
+        require(stopped); _; 
+    }    
 
+    
     /*
        Modifier that throws an error if the msg.sender is not the owner.
     */
@@ -150,6 +168,26 @@ contract CivilState {
         owner = msg.sender;
     }    
   
+    /* Circuit Breaker implementation*/
+    
+    // Only "admin" (owner) can stop contract functionnalities
+    function stopCivilStateContract() isAdmin public {
+        stopped = true;
+    }
+
+    // Only "admin" (owner) can stop contract functionnalities
+    function restartCivilStateContract() isAdmin public {
+        stopped = false;
+    }
+
+    // Only Admin can see contract balance
+    function getBalanceContract() isAdmin view public returns(uint){
+        return address(this).balance;
+    }
+    function withdraw() onlyInEmergency public {
+        owner.transfer(address(this).balance);
+    }
+    
     // Admin functions
 
     /* 
@@ -202,7 +240,7 @@ contract CivilState {
         When there is a birth, a member of the hospital must declare the birth : this function creates a new birth
         Only a hospital member can create a new birth
     */      
-    function addBirth (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity) public isHospital returns(uint) {
+    function addBirth (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity) public isHospital stopInEmergency returns(uint) {
         //uint birthId = birthsCount++;
         uint birthId = birthsCount;
         birthsCount = birthsCount.add(1);
@@ -219,13 +257,6 @@ contract CivilState {
 
     // Function to get the birthId after the creation of a new birth
     function getBirthId () public view returns (uint _birthId, string memory _name, string memory _lastName){
-        //_name = "undefined";
-        //_lastName = "undefined";
-        /*if (birthsCount >= 0) {
-            _birthId = birthsCount - 1;
-            _name = births[_birthId].name;
-            _lastName = births[_birthId].lastName;
-        }*/
         if (birthsCount == 0) {
           _birthId = birthsCount;  
         } else {
@@ -241,7 +272,7 @@ contract CivilState {
         After a birth declaration, the a member of the prefecture must verifiy the citizen's identity
         Only a member of the prefecture can verify an identity
     */
-    function verifyIdentity (uint birthId) public isPrefecture returns (uint identityId) {
+    function verifyIdentity (uint birthId) public isPrefecture stopInEmergency returns (uint identityId) {
         require(births[birthId].isVerified == false);
         births[birthId].isVerified = true;
         
@@ -277,14 +308,6 @@ contract CivilState {
 
     // Function to get the identityId after the verification of an identity
     function getIdentityId() public view returns (uint _identity, string memory _name, string memory _lastName){
-        /*_name = "undefined";
-        _lastName = "undefined";
-        if (identitiesCount >= 0) {
-            _identity = identitiesCount - 1;
-            _name = identities[_identity].birthinfo.name;
-            _lastName = identities[_identity].birthinfo.lastName;            
-        }*/
-
         if (identitiesCount == 0) {
           _identity = identitiesCount;  
         } else {
@@ -298,7 +321,7 @@ contract CivilState {
         Function to declare a marriage
         Only a city Hall member can declare a marriage
     */
-    function declareMarriage (uint identityId, string memory _marriageDate) public isCityHall {
+    function declareMarriage (uint identityId, string memory _marriageDate) public isCityHall stopInEmergency {
         require(identities[identityId].birthinfo.isVerified == true);
         
         //Change marital status

@@ -39,14 +39,14 @@
     "absolutePath": "/C/Users/anatereza.mascarenha/Documents/Ethereum/EthereumCertification/Civil State App/contracts/LibConcatenateStrings.sol",
     "exportedSymbols": {
       "LibConcatenateStrings": [
-        979
+        991
       ]
     },
-    "id": 980,
+    "id": 992,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 960,
+        "id": 972,
         "literals": [
           "solidity",
           ">=",
@@ -65,16 +65,16 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 979,
+        "id": 991,
         "linearizedBaseContracts": [
-          979
+          991
         ],
         "name": "LibConcatenateStrings",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 977,
+              "id": 989,
               "nodeType": "Block",
               "src": "241:56:1",
               "statements": [
@@ -87,11 +87,11 @@
                         "arguments": [
                           {
                             "argumentTypes": null,
-                            "id": 972,
+                            "id": 984,
                             "name": "a",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 962,
+                            "referencedDeclaration": 974,
                             "src": "283:1:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -100,11 +100,11 @@
                           },
                           {
                             "argumentTypes": null,
-                            "id": 973,
+                            "id": 985,
                             "name": "b",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 964,
+                            "referencedDeclaration": 976,
                             "src": "286:1:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -125,18 +125,18 @@
                           ],
                           "expression": {
                             "argumentTypes": null,
-                            "id": 970,
+                            "id": 982,
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1452,
+                            "referencedDeclaration": 1310,
                             "src": "266:3:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
                               "typeString": "abi"
                             }
                           },
-                          "id": 971,
+                          "id": 983,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -150,7 +150,7 @@
                             "typeString": "function () pure returns (bytes memory)"
                           }
                         },
-                        "id": 974,
+                        "id": 986,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -172,7 +172,7 @@
                           "typeString": "bytes memory"
                         }
                       ],
-                      "id": 969,
+                      "id": 981,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -185,7 +185,7 @@
                       },
                       "typeName": "string"
                     },
-                    "id": 975,
+                    "id": 987,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -199,30 +199,30 @@
                       "typeString": "string memory"
                     }
                   },
-                  "functionReturnParameters": 968,
-                  "id": 976,
+                  "functionReturnParameters": 980,
+                  "id": 988,
                   "nodeType": "Return",
                   "src": "252:37:1"
                 }
               ]
             },
             "documentation": null,
-            "id": 978,
+            "id": 990,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "concatenate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 965,
+              "id": 977,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 962,
+                  "id": 974,
                   "name": "a",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "171:15:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -231,7 +231,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 961,
+                    "id": 973,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "171:6:1",
@@ -245,10 +245,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 964,
+                  "id": 976,
                   "name": "b",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "188:16:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -257,7 +257,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 963,
+                    "id": 975,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "188:6:1",
@@ -273,15 +273,15 @@
               "src": "170:35:1"
             },
             "returnParameters": {
-              "id": 968,
+              "id": 980,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 967,
+                  "id": 979,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "226:13:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -290,7 +290,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 966,
+                    "id": 978,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "226:6:1",
@@ -305,14 +305,14 @@
               ],
               "src": "225:15:1"
             },
-            "scope": 979,
+            "scope": 991,
             "src": "150:147:1",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 980,
+        "scope": 992,
         "src": "69:231:1"
       }
     ],
@@ -322,14 +322,14 @@
     "absolutePath": "/C/Users/anatereza.mascarenha/Documents/Ethereum/EthereumCertification/Civil State App/contracts/LibConcatenateStrings.sol",
     "exportedSymbols": {
       "LibConcatenateStrings": [
-        979
+        991
       ]
     },
-    "id": 980,
+    "id": 992,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 960,
+        "id": 972,
         "literals": [
           "solidity",
           ">=",
@@ -348,16 +348,16 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 979,
+        "id": 991,
         "linearizedBaseContracts": [
-          979
+          991
         ],
         "name": "LibConcatenateStrings",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 977,
+              "id": 989,
               "nodeType": "Block",
               "src": "241:56:1",
               "statements": [
@@ -370,11 +370,11 @@
                         "arguments": [
                           {
                             "argumentTypes": null,
-                            "id": 972,
+                            "id": 984,
                             "name": "a",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 962,
+                            "referencedDeclaration": 974,
                             "src": "283:1:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -383,11 +383,11 @@
                           },
                           {
                             "argumentTypes": null,
-                            "id": 973,
+                            "id": 985,
                             "name": "b",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 964,
+                            "referencedDeclaration": 976,
                             "src": "286:1:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_string_memory_ptr",
@@ -408,18 +408,18 @@
                           ],
                           "expression": {
                             "argumentTypes": null,
-                            "id": 970,
+                            "id": 982,
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1452,
+                            "referencedDeclaration": 1310,
                             "src": "266:3:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
                               "typeString": "abi"
                             }
                           },
-                          "id": 971,
+                          "id": 983,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -433,7 +433,7 @@
                             "typeString": "function () pure returns (bytes memory)"
                           }
                         },
-                        "id": 974,
+                        "id": 986,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -455,7 +455,7 @@
                           "typeString": "bytes memory"
                         }
                       ],
-                      "id": 969,
+                      "id": 981,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -468,7 +468,7 @@
                       },
                       "typeName": "string"
                     },
-                    "id": 975,
+                    "id": 987,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -482,30 +482,30 @@
                       "typeString": "string memory"
                     }
                   },
-                  "functionReturnParameters": 968,
-                  "id": 976,
+                  "functionReturnParameters": 980,
+                  "id": 988,
                   "nodeType": "Return",
                   "src": "252:37:1"
                 }
               ]
             },
             "documentation": null,
-            "id": 978,
+            "id": 990,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "concatenate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 965,
+              "id": 977,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 962,
+                  "id": 974,
                   "name": "a",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "171:15:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -514,7 +514,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 961,
+                    "id": 973,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "171:6:1",
@@ -528,10 +528,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 964,
+                  "id": 976,
                   "name": "b",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "188:16:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -540,7 +540,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 963,
+                    "id": 975,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "188:6:1",
@@ -556,15 +556,15 @@
               "src": "170:35:1"
             },
             "returnParameters": {
-              "id": 968,
+              "id": 980,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 967,
+                  "id": 979,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 978,
+                  "scope": 990,
                   "src": "226:13:1",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -573,7 +573,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 966,
+                    "id": 978,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "226:6:1",
@@ -588,14 +588,14 @@
               ],
               "src": "225:15:1"
             },
-            "scope": 979,
+            "scope": 991,
             "src": "150:147:1",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 980,
+        "scope": 992,
         "src": "69:231:1"
       }
     ],
@@ -611,10 +611,22 @@
       "links": {},
       "address": "0x249615a98Cf5Ffe89BfB1CBC713023e0A5271ceD",
       "transactionHash": "0x2ce51c5b4523bfd684ecb6cffba637de7072aede3887d6d085d63ce453598d36"
+    },
+    "1607339845729": {
+      "events": {},
+      "links": {},
+      "address": "0x8f766F8B883E6A80cC754F796f1df92c87dC894E",
+      "transactionHash": "0x4972dd3425d9d34ccd29f230e101f53fb23fcbbd3cc5c77203c0daf1e0b18f81"
+    },
+    "1607340597189": {
+      "events": {},
+      "links": {},
+      "address": "0x7cCfF1d4A6D036c11329e33A4062f1b0096aB60e",
+      "transactionHash": "0xb572dafc6da1e10dea38d79b66581674768dbf5ad99d01cd740738d7cf2d3ea8"
     }
   },
   "schemaVersion": "3.0.22",
-  "updatedAt": "2020-12-07T09:50:41.959Z",
+  "updatedAt": "2020-12-07T11:30:35.361Z",
   "devdoc": {
     "methods": {}
   },
