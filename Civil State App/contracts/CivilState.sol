@@ -204,6 +204,62 @@ contract CivilState {
         selfdestruct(address(uint160(owner))); // cast owner to address payable
     }
 
+    /**
+     * Helper functions
+     */
+    /// @dev Gets the births count.
+    /// @return birthsCount Births count.
+    function getBirthsCount() public view returns(uint) {
+        return birthsCount; 
+    }
+
+    /// @dev Gets the identitues count.
+    /// @return identitiesCount Identities count.
+    function getIdentitiesCount() public view returns(uint){
+        return identitiesCount;
+    }
+
+    /// @dev Gets owner address.
+    /// @return Owner's address.
+    function getOwner() public view returns(address){
+        return owner;
+    }
+
+    /// @dev Verifies if the msg.sender is a hospital member.
+    /// @return The hospital member address (if it is a member, otherwise return '0x..0').
+    function isHospitalMember() public view returns(address){
+        address memberAddress;
+        if (bytes(hospitalMembers[msg.sender].name).length > 0) {
+            memberAddress = msg.sender;
+        } else {
+            memberAddress = 0x0000000000000000000000000000000000000000;
+        }
+        return memberAddress;
+    }
+
+    /// @dev Verifies if the msg.sender is a prefecture member.
+    /// @return The prefecture member address (if it is a member, otherwise return '0x..0').
+    function isPrefectureMember() public view returns(address){
+        address memberAddress;
+        if (bytes(prefectureMembers[msg.sender].name).length > 0) {
+            memberAddress = msg.sender;
+        } else {
+            memberAddress = 0x0000000000000000000000000000000000000000;
+        }
+        return memberAddress;
+    }
+
+    /// @dev Verifies if the msg.sender is a city hall member.
+    /// @return The city hall member address (if it is a member, otherwise return '0x..0').
+    function isCityHallMember() public view returns(address){
+        address memberAddress;
+        if (bytes(cityHallMembers[msg.sender].name).length > 0) {
+            memberAddress = msg.sender;
+        } else {
+            memberAddress = 0x0000000000000000000000000000000000000000;
+        }
+        return memberAddress;
+    }
    
     /**
      * Admin functions
@@ -251,11 +307,10 @@ contract CivilState {
         emit LogEventAddCityHallMember(_memberName);
     }
 
-    /*
-        Function to add a new birth
-        When there is a birth, a member of the hospital must declare the birth : this function creates a new birth
-        Only a hospital member can create a new birth
-    */
+    /**
+     * Hospital members functions
+     */
+
     /// @dev Adds a new birth.
     /// @param _name Birth name.
     /// @param _lastName Birth last name.
@@ -276,7 +331,10 @@ contract CivilState {
         return birthId;
     }
 
-    // Function to get the birthId after the creation of a new birth
+    /// @dev Gets the identification of the last birth added  
+    /// @return _birthId Birth identification of the last birth added.
+    /// @return _name Birth name of the last birth added.
+    /// @return _lastName Birth last name of the last birth added.    
     function getBirthId () public view returns (uint _birthId, string memory _name, string memory _lastName){
         if (birthsCount == 0) {
           _birthId = birthsCount;  
@@ -287,12 +345,14 @@ contract CivilState {
         _lastName = births[_birthId].lastName;
  
     }
-    
-    /*
-        Function to verify an identity  
-        After a birth declaration, the a member of the prefecture must verifiy the citizen's identity
-        Only a member of the prefecture can verify an identity
-    */
+
+    /**
+     * Prefecture members functions
+     */    
+
+    /// @dev Verifies an identity.
+    /// @param birthId Birth identitication to verify.
+    /// @return identityId The identity identification.
     function verifyIdentity (uint birthId) public isPrefecture stopInEmergency returns (uint identityId) {
         require(births[birthId].isVerified == false);
         births[birthId].isVerified = true;
@@ -327,7 +387,10 @@ contract CivilState {
         emit LogEventVerifyIdentity(birthId, identityId);
     }
 
-    // Function to get the identityId after the verification of an identity
+    /// @dev Gets the identification of the last identity verified  
+    /// @return _identity Identity identification of the last identity verified.
+    /// @return _name Identity name of the last identity verified.
+    /// @return _lastName Identity last name of the last identity verified.
     function getIdentityId() public view returns (uint _identity, string memory _name, string memory _lastName){
         if (identitiesCount == 0) {
           _identity = identitiesCount;  
@@ -338,23 +401,30 @@ contract CivilState {
         _lastName = identities[_identity].birthinfo.lastName; 
     }
 
-    /*
-        Function to declare a marriage
-        Only a city Hall member can declare a marriage
-    */
+    /**
+     * City hall members functions
+     */  
+
+    /// @dev Declares a marriage.
+    /// @param identityId Idenity identitication to declare marriage.
+    /// @param _marriageDate Marriage date.
     function declareMarriage (uint identityId, string memory _marriageDate) public isCityHall stopInEmergency {
         require(identities[identityId].birthinfo.isVerified == true);
         
-        //Change marital status
         identities[identityId].maritalStatus = "married";
         identities[identityId].marriageDate = _marriageDate;
 
         emit LogEventDeclareMarriage(_marriageDate, identityId);
     }
 
-    /*
-        Function to allow citizens to modify their password
-    */
+    /**
+     * Citizens (users) and responsible entities functions
+     */
+
+    /// @dev Changes the password.
+    /// @param _login User login.
+    /// @param _oldPwd Old password.
+    /// @param _newPwd New password.    
     function modifyMyPassword (string memory _login, string memory _oldPwd, string memory _newPwd) public{
         //Verify that the user used the good password
         require (citizenIdentifiers[_login].userPassword == keccak256(bytes(_oldPwd)));
@@ -362,9 +432,10 @@ contract CivilState {
         citizenIdentifiers[_login].userPassword = newPwd;
     }
 
-    /*
-        Function to allow citizen to generete an identity certification
-    */
+    /// @dev Generates identity certification.
+    /// @param login User login.
+    /// @param pwd User password.
+    /// @return identity_hash The certification hash.
     function generateIdCertification (string memory login, string memory pwd) public returns (bytes32){
         //Verify that the user used the good password
         require (citizenIdentifiers[login].userPassword == keccak256(bytes(pwd)));
@@ -380,21 +451,19 @@ contract CivilState {
         return identity_hash;
     }
     
-    // Function to get the lastCertification
+    /// @dev Gets the hash of the last certification generated by the user
+    /// @param _login User login.
+    /// @return identity_hash The certification hash.
     function getCertification(string memory _login) public view returns (bytes32) {
         return citizenIdentifiers[_login].newCertification;
     }
     
-
-    /*
-       Functions read
-    */
-
-    /*
-        Function to verify identityCertification
-        Once a citizen generates a certification, anyone who has the hash of the certification can verify the identity
-    */
-
+    /// @dev Verifies a certification
+    /// @param id_hash The certification hash.
+    /// @return _name The citizen name.
+    /// @return _lastName The citizen last name.
+    /// @return _birthDate The citizen birth date.
+    /// @return _birthCity The citizen birth city.
     function verifyCertification (bytes32 id_hash) public returns (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus) {
         // get userIdCount
         uint userIdCount = idCertifications[id_hash].userIdentityCount;
@@ -403,75 +472,31 @@ contract CivilState {
 
     }
     
-    // Function to read a birth information
+    /**
+     * Read functions
+     */
+
+    /// @dev Gets a birth information
+    /// @param birthId The birth identification.
+    /// @return _name The birth name.
+    /// @return _lastName The birth last name.
+    /// @return _birthDate The birth date.
+    /// @return _birthCity The birth city.
+     /// @return _isVerified The birth verification status.   
     function readBirth(uint birthId) public view returns(string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, bool _isVerified){
         return (births[birthId].name, births[birthId].lastName, births[birthId].birthDate, births[birthId].birthCity, births[birthId].isVerified);
     }        
 
-    // Function to read an identity information
+    /// @dev Gets an identity information
+    /// @param identityId The identity identification.
+    /// @return _name The citizen name.
+    /// @return _lastName The citizen last name.
+    /// @return _birthDate The citizen birth date.
+    /// @return _birthCity The citizen birth city.
+    /// @return _maritalStatus The citizen marital status.    
     function readIdentity(uint identityId) public view returns(string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus){
         require(identities[identityId].birthinfo.isVerified == true);
         return (identities[identityId].birthinfo.name, identities[identityId].birthinfo.lastName, identities[identityId].birthinfo.birthDate, identities[identityId].birthinfo.birthCity, identities[identityId].maritalStatus);
     }
-
-    // Function to get the births count
-    function getBirthsCount() public view returns(uint _birthCount) {
-        return birthsCount; 
-    }
-
-    // Function to get the identities count
-    function getIdentitiesCount() public view returns(uint _identitiesCount){
-        return identitiesCount;
-    }
-
-    // Function to get the owner of the contract
-    function getOwner() public view returns(address _owner){
-        return owner;
-    }
-
-    /* 
-        Function to verify if the msg.sender is a hospital member
-        Return 0x00..0 if not a hospital member
-        Return the address of the msg.sender if it is a hospital member
-    */
-    function isHospitalMember() public view returns(address){
-        address memberAddress;
-        if (bytes(hospitalMembers[msg.sender].name).length > 0) {
-            memberAddress = msg.sender;
-        } else {
-            memberAddress = 0x0000000000000000000000000000000000000000;
-        }
-        return memberAddress;
-    }
-
-    /* 
-        Function to verify if the msg.sender is a prefecture member
-        Return 0x00..0 if not a prefecture member
-        Return the address of the msg.sender if it is a prefecture member
-    */
-    function isPrefectureMember() public view returns(address){
-        address memberAddress;
-        if (bytes(prefectureMembers[msg.sender].name).length > 0) {
-            memberAddress = msg.sender;
-        } else {
-            memberAddress = 0x0000000000000000000000000000000000000000;
-        }
-        return memberAddress;
-    }
-
-    /* 
-        Function to verify if the msg.sender is a city hall member
-        Return 0x00..0 if not a city hall member
-        Return the address of the msg.sender if it is a city hall member
-    */
-    function isCityHallMember() public view returns(address){
-        address memberAddress;
-        if (bytes(cityHallMembers[msg.sender].name).length > 0) {
-            memberAddress = msg.sender;
-        } else {
-            memberAddress = 0x0000000000000000000000000000000000000000;
-        }
-        return memberAddress;
-    }
-
+ 
 }

@@ -51,7 +51,8 @@ class AddBirth extends Component {
     updateBirthCity = event => {
         this.setState({ birthCity : event.target.value});
     }
-
+    
+    
     getBirthId =  async() =>  {
       const response = await  this.state.CivilStateInstance.methods.getBirthId().call();
       // response :  uint _birthId, string memory _name, string memory _lastName
@@ -72,6 +73,7 @@ class AddBirth extends Component {
                   from : this.state.account,
                   gas: 1000000
               })
+
         alert('A birth declaration was submitted');
       } catch (error) {
           // Catch any errors for any of the above operations.
