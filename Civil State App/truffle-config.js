@@ -10,5 +10,12 @@ module.exports = {
        host: 'localhost',
        port: 8545,
     }
- }
+   }, 
+   settings: {
+   optimizer: {
+     enabled: true,
+     runs: 200
+   }
+},
+
 };

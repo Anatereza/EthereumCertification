@@ -118,6 +118,8 @@ contract CivilState {
     event LogEventDeclareMarriage(string marriageDate, uint identityId);
     // Event signaling that a certification was generated
     event LogEventCertificationGenerated(string login, bytes32 identity_hash);
+    // Event verifying a certification
+    event LogEventVerifyCertification (string name, string lastName, string birthDate, string birthCity, string maritalStatus);
 
     // Modifiers
         /*
@@ -178,6 +180,14 @@ contract CivilState {
     // Only "admin" (owner) can stop contract functionnalities
     function restartCivilStateContract() isAdmin public {
         stopped = false;
+    }
+
+    /*
+        Mortal patten
+    */
+    function kill() public isAdmin {
+
+        selfdestruct(address(uint160(owner))); // cast owner to address payable
     }
 
     // Only Admin can see contract balance
@@ -374,9 +384,10 @@ contract CivilState {
         Once a citizen generates a certification, anyone who has the hash of the certification can verify the identity
     */
 
-    function verifyCertification (bytes32 id_hash) public view returns (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus) {
+    function verifyCertification (bytes32 id_hash) public returns (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus) {
         // get userIdCount
         uint userIdCount = idCertifications[id_hash].userIdentityCount;
+        emit LogEventVerifyCertification (identities[userIdCount].birthinfo.name, identities[userIdCount].birthinfo.lastName, identities[userIdCount].birthinfo.birthDate, identities[userIdCount].birthinfo.birthCity, identities[userIdCount].maritalStatus);
         return(identities[userIdCount].birthinfo.name, identities[userIdCount].birthinfo.lastName, identities[userIdCount].birthinfo.birthDate, identities[userIdCount].birthinfo.birthCity, identities[userIdCount].maritalStatus);
 
     }
