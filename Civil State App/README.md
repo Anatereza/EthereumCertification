@@ -2,17 +2,13 @@
 
 # Table of Contents <!-- omit in TOC -->
 
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Starting the first TruBudget node](#starting-the-first-trubudget-node)
-  - [Working with TruBudget](#working-with-trubudget)
-  - [Adding new nodes to the network](#adding-new-nodes-to-the-network)
-  - [Granting access for new nodes](#granting-access-for-new-nodes)
-  - [Using TruBudget programatically through its API](#using-trubudget-programatically-through-its-api)
-  - [Hints and Pitfalls](#hints-and-pitfalls)
-- [Build and Develop from Local Sources](#build-and-develop-from-local-sources)
-- [More Information](#more-information)
+- [Description](#description)
+  - [User storiers](#user-stories)
+- [Set up](#set-up)
+  - [Prerequisite](#prerequisite)
+  - [Installations](#installations)
+  - [Compiling and migrating contracts](#compiling-and-migrating-contracts)
+  - [Starting the web app](#starting-the-web-app)
 
 
 # Description 
@@ -81,7 +77,7 @@ npm install -g truffle
 npm install -g ganache-cli
 ```
 
-## Metamask 
+### Metamask 
 Download Metamask from the [website](metamask.io)
 
 ## Compiling and migrating contracts
