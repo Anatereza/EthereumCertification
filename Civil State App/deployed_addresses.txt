@@ -1,0 +1,22 @@
+Test network
+===========================
+
+> Testnet : Rinkeby
+> Addresses :
+	Contracts : 
+	   'CivilState'
+	   ----------------------
+	   > contract address:    0xFbb233D171E17E1e18F6db98c9Ea61574ECC2649
+	
+	Libraries : 
+	   Deploying 'LibTransformUintString'
+	   ----------------------------------
+	   > contract address:    0x45d6803dA6fBA85262486075926F59014E0c471d
+
+	   Deploying 'LibConcatenateStrings'
+	   ---------------------------------
+	   > contract address:    0x875021192A9560f8569044336e711dbD386e526B
+
+	   Deploying 'SafeMath'
+	   --------------------
+	   > contract address:    0xFA1D5b13b14B15b3d444Fa35b19f30B7F894e672	
