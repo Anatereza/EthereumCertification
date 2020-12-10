@@ -7,6 +7,12 @@ import "../contracts/CivilState.sol";
 
 contract TestCivilState {
 
+  /**
+  * @dev Check the "verifyIdentity" function
+  *  - Add a new hospital member => check that only this address can "AddBirth"
+  *  - Add a new prefecture member => check that only this address can "VerifyIdentity"
+  *  - Check the identity count is added when a new identity is verified
+  */
   function testVerifyIdentity() public {
     CivilState civilstate = new CivilState();
     

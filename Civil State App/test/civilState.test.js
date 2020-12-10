@@ -26,6 +26,7 @@ contract('CivilState', function(accounts) {
         instance = await CivilState.new()
     })
 
+    /// @dev Check if the owner is the deploying address
     describe("Setup", async() => {
 
         it("OWNER should be set to the deploying address", async() => {
@@ -36,6 +37,7 @@ contract('CivilState', function(accounts) {
 
     
     describe("Functions", () => {
+        /// @dev Check the "addHospitalMember" function by adding a new member and checking the name in the event emitted
         describe("addHospitalMember", async() => {
             it("only the owner should be able to add a hospital member", async() => {
                 await instance.addHospitalMember(hospitalMember, "hospitalMember1", {from: deployAccount} )
@@ -50,7 +52,7 @@ contract('CivilState', function(accounts) {
             })            
             
         })
-
+        /// @dev Check the "addPrefectureMember" function by adding a new member and checking the name in the event emitted
         describe("addPrefectureMember", async() => {
             it("only the owner should be able to add a prefecture member", async() => {
                 await instance.addPrefectureMember(prefectureMember, "prefectureMember1", {from: deployAccount} )
@@ -66,6 +68,7 @@ contract('CivilState', function(accounts) {
             
         })
 
+        /// @dev Check the "addCityHallMember" function by adding a new member and checking the name in the event emitted
         describe("addCityHallMember", async() => {
             it("only the owner should be able to add a cityHall member", async() => {
                 await instance.addCityHallMember(cityHallMember, "cityHallMember1", {from: deployAccount} )
@@ -80,7 +83,11 @@ contract('CivilState', function(accounts) {
             })            
             
         })        
-
+        /**
+         * @dev Check the "addBirth" function
+         *  - Add a new hospital member => check that only this address can "AddBirth"
+         *  - Check a new birth is created with the given info from the event that is emitted
+         */
         describe("addBirth", async() => {
             it("only the a hospital member should be able to add a new birth", async() => {
                 await instance.addHospitalMember(hospitalMember, "hospitalMember1", {from: deployAccount} )
@@ -103,8 +110,14 @@ contract('CivilState', function(accounts) {
                 assert.equal(eventData.lastName, citizenA.lastName, "the birth lastname name should match")
             })      
          
-        })        
+        }) 
 
+        /**
+         * @dev Check the "verifyIdentity" function
+         *  - Add a new hospital member => check that only this address can "AddBirth"
+         *  - Add a new prefecture member => check that only this address can "VerifyIdentity"
+         *  - Check the identity is verified with the given info from the event that is emitted
+         */
         describe("verifyIdentity", async() => {
             it("only the a prefecture member should be able to verify a identity", async() => {
                 await instance.addHospitalMember(hospitalMember, "hospitalMember1", {from: deployAccount} )
@@ -127,8 +140,6 @@ contract('CivilState', function(accounts) {
                 await instance.addPrefectureMember(prefectureMember, "prefectureMember1", {from: deployAccount} )
                 await catchRevert(instance.addPrefectureMember(prefectureMember, "prefectureMember1", {from: citizen1}))
                 
-                // emit LogEventVerifyIdentity(birthId, identityId);
-                // event LogEventBirthAdded (string name, string lastName, uint birthId);
                 await instance.addBirth(citizenA.name, citizenA.lastName, citizenA.birthDate, citizenA.birthCity, {from: hospitalMember} )
                 const tx = await instance.verifyIdentity(0, {from: prefectureMember} )
                 const eventData = tx.logs[0].args
@@ -139,7 +150,13 @@ contract('CivilState', function(accounts) {
          
         })      
 
-       
+        /**
+         * @dev Check the "generateIdCertification" function
+         *  - Add a new hospital member => check that only this address can "AddBirth"
+         *  - Add a new prefecture member => check that only this address can "VerifyIdentity"
+         *  - Generate a new certification with the user "login" and "password"
+         *  - Check that the certification is generated only with the good login and password
+         */       
         describe("generateIdCertification", async() => {
                 it("a citizen should be able to generate a certification", async() => {
                     await instance.addHospitalMember(hospitalMember, "hospitalMember1", {from: deployAccount} )
@@ -154,7 +171,6 @@ contract('CivilState', function(accounts) {
                     await instance.verifyIdentity(0, {from: prefectureMember} )
                     await catchRevert(instance.verifyIdentity(0, {from: citizen1} ))
 
-                    // Once the identity is verified, the citizen should be able to generate a certificate
                     const login = "login_" + citizenA.lastName + citizenA.birthDate
                     const pwd = "pwd_" + citizenA.birthDate
                     await instance.generateIdCertification(login, pwd, {from: citizen1} )
@@ -168,7 +184,6 @@ contract('CivilState', function(accounts) {
                     await instance.addPrefectureMember(prefectureMember, "prefectureMember1", {from: deployAccount} )
                     await catchRevert(instance.addPrefectureMember(prefectureMember, "prefectureMember1", {from: citizen1}))                  
 
-                    //emit LogEventCertificationGenerated(login, identity_hash);
                     await instance.addBirth(citizenA.name, citizenA.lastName, citizenA.birthDate, citizenA.birthCity, {from: hospitalMember} )
                     await instance.verifyIdentity(0, {from: prefectureMember} )
                     const login = "login_" + citizenA.lastName + citizenA.birthDate
@@ -180,8 +195,15 @@ contract('CivilState', function(accounts) {
                 })      
              
         })         
-
-        // function verifyCertification (bytes32 id_hash) public view returns (string memory _name, string memory _lastName, string memory _birthDate, string memory _birthCity, string memory _maritalStatus) {
+        
+        /**
+         * @dev Check the "verifyCertification" function
+         *  - Add a new hospital member => check that only this address can "AddBirth"
+         *  - Add a new prefecture member => check that only this address can "VerifyIdentity"
+         *  - Generate a new certification with the user "login" and "password"
+         *  - Verify with "verifyCertification" function that the hash generated verifies with the citizen information
+         * 
+         */   
             describe("verifyCertification", async() => {
                 it("from a certification hash the citizen information should be available", async() => {
                     await instance.addHospitalMember(hospitalMember, "hospitalMember1", {from: deployAccount} )
