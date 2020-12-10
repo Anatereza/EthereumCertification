@@ -98,9 +98,9 @@ npm install
 ``` 
 
 - Starting the app
-
 ```bash
 npm start
 ```
+> The application will start in your navigator : http://localhost:3000/
 
 Explore the application ! 
