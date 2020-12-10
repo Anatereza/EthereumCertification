@@ -1,14 +1,5 @@
 # Avoiding Common Attacks <!-- omit in TOC -->
 
-# Design patterns used in the project <!-- omit in TOC -->
-
-- [Circuit Breaker](#circuit-breaker)
-- [Mortal](#mortal)
-- [Fail early and fail loud](#fail-early-and-fail-loud)
-- [Restricting access](#restricting-access)
-
-
-
 # Re-entracy Attacks (SWC-107)
 
 I ensured the protection of my contracts from “Re-entrancy attacks” (SWC-107) by not doing any external calls, avoiding passing control flow to external contracts.
