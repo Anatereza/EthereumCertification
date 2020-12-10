@@ -357,7 +357,6 @@ contract CivilState {
         require(births[birthId].isVerified == false);
         births[birthId].isVerified = true;
         
-        // Initialization of login and password
         string memory login = "login_";
         string memory _login = login.concatenate(births[birthId].lastName); 
         login = _login.concatenate(births[birthId].birthDate);        
@@ -368,7 +367,6 @@ contract CivilState {
 
         bytes32 lambdaCertification = keccak256(bytes("new"));
 
-        //identityId = identitiesCount++;
         identityId = identitiesCount;
         identitiesCount = identitiesCount.add(1);
         identities[identityId] = Identity({
